@@ -83,7 +83,7 @@ export function ProgramBar({
         </p>
 
         <span className="progbar__meta num">
-          {plural(sceneCount, 'cena', 'cenas')} · {plural(cueCount, 'cue', 'cues')}
+          {plural(sceneCount, 'cena', 'cenas')} · {plural(cueCount, 'música', 'músicas')}
         </span>
 
         <button type="button" className="btn progbar__swap" onClick={() => setPicking(true)}>

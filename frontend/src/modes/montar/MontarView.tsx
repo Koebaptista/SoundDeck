@@ -23,7 +23,7 @@ const TABS: { id: MontarTab; label: string }[] = [
   { id: 'pecas', label: 'Peças' },
   { id: 'dias', label: 'Dias' },
   { id: 'cenas', label: 'Cenas' },
-  { id: 'cues', label: 'Cues da cena' },
+  { id: 'cues', label: 'Músicas da cena' },
   { id: 'biblioteca', label: 'Biblioteca' },
 ]
 

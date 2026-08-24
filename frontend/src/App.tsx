@@ -89,7 +89,7 @@ export function App() {
           <WarnIcon size={14} />
           <p>
             O navegador ainda não liberou o áudio. Clique em qualquer lugar da tela antes de começar
-            — nenhum cue toca até lá.
+            — nenhuma música toca até lá.
           </p>
           <button type="button" className="btn" onClick={() => void engine.unlock()}>
             Liberar áudio

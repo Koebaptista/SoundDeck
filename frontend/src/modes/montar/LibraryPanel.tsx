@@ -50,7 +50,7 @@ export function LibraryPanel() {
     push({
       message:
         used > 0
-          ? `"${audio.name}" removido, junto com ${plural(used, 'cue', 'cues')} que o usavam.`
+          ? `"${audio.name}" removido, junto com ${plural(used, 'música', 'músicas')} que o usavam.`
           : `"${audio.name}" removido da biblioteca.`,
       tone: 'warn',
       action: {
@@ -122,7 +122,7 @@ export function LibraryPanel() {
                   <span aria-hidden="true">·</span>
                   <span className="num">
                     <span className="sr-only">em uso em </span>
-                    {plural(used, 'cue', 'cues')}
+                    {plural(used, 'música', 'músicas')}
                   </span>
                   <span aria-hidden="true">·</span>
                   <span className="audio__status" data-state={state}>

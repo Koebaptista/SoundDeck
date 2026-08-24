@@ -155,7 +155,7 @@ export function ShowPicker({ open, onClose, showId, dayId, onPick, onEditDays }:
                         </span>
                         <span className="picker__count num">
                           {plural(counts.scenes, 'cena', 'cenas')} ·{' '}
-                          {plural(counts.cues, 'cue', 'cues')}
+                          {plural(counts.cues, 'música', 'músicas')}
                         </span>
                       </span>
                       {live ? (

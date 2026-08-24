@@ -58,7 +58,7 @@ export function BemVindo({ onClose }: { onClose: () => void }) {
             <h3 className="bemvindo__title">Operar ou Montar — no alto da tela</h3>
             <p>
               <strong>Montar</strong> é a preparação: enviar áudios, criar as cenas e anotar a
-              deixa de cada cue. <strong>Operar</strong> é o espetáculo: a tela grande, onde você
+              deixa de cada música. <strong>Operar</strong> é o espetáculo: a tela grande, onde você
               clica para o som sair.
             </p>
             <p className="bemvindo__aside">

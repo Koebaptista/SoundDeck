@@ -76,8 +76,8 @@ export function ScenesPanel({
     push({
       message: `"${scene.name}" agora está em "${target.name}", com ${plural(
         cuesOf(scene.id).length,
-        'cue',
-        'cues',
+        'música',
+        'músicas',
       )}.`,
       action: { label: 'Desfazer', run: () => void run(() => repo.moveScene(scene.id, from)) },
     })
@@ -88,7 +88,7 @@ export function ScenesPanel({
     if (!created) return
     onSelect(created.id)
     push({
-      message: `"${scene.name}" duplicada neste dia, com os cues.`,
+      message: `"${scene.name}" duplicada neste dia, com as músicas.`,
       action: { label: 'Desfazer', run: () => void run(() => repo.deleteScene(created.id)) },
     })
   }
@@ -120,7 +120,7 @@ export function ScenesPanel({
           A ordem desta lista é a ordem do roteiro desta apresentação, e vira a numeração que aparece
           no deck.
           {days.length > 1 &&
-            ' O seletor de dia em cada linha realoca a cena inteira, com os cues dela.'}
+            ' O seletor de dia em cada linha realoca a cena inteira, com as músicas dela.'}
         </p>
       </header>
 
@@ -128,7 +128,7 @@ export function ScenesPanel({
         <div className="empty empty--inline">
           <p className="empty__title">Nenhuma cena neste dia</p>
           <p className="empty__body">
-            Uma cena é um bloco do roteiro — “Abertura”, “Entrada de Ana”. Os cues moram dentro
+            Uma cena é um bloco do roteiro — “Abertura”, “Entrada de Ana”. As músicas moram dentro
             delas.
           </p>
         </div>
@@ -152,9 +152,9 @@ export function ScenesPanel({
                 type="button"
                 className="rowlink"
                 onClick={() => onEditCues(scene.id)}
-                aria-label={`Abrir os cues de ${scene.name}`}
+                aria-label={`Abrir as músicas de ${scene.name}`}
               >
-                <span className="num">{plural(cuesOf(scene.id).length, 'cue', 'cues')}</span>
+                <span className="num">{plural(cuesOf(scene.id).length, 'música', 'músicas')}</span>
                 <NextIcon size={13} className="rowlink__go" />
               </button>
 
@@ -182,7 +182,7 @@ export function ScenesPanel({
                   className="icon-btn"
                   onClick={() => void copy(scene)}
                   aria-label={`Duplicar cena ${scene.name}`}
-                  title="Duplicar neste dia, com os cues"
+                  title="Duplicar neste dia, com as músicas"
                 >
                   <CopyIcon size={14} />
                 </button>

@@ -55,7 +55,7 @@ export function ShowsPanel({
     if (!copy) return
     onSelect(copy.id)
     push({
-      message: `"${show.name}" copiada com todos os dias, cenas e cues. Renomeie a cópia.`,
+      message: `"${show.name}" copiada com todos os dias, cenas e músicas. Renomeie a cópia.`,
     })
   }
 
@@ -66,8 +66,8 @@ export function ShowsPanel({
     push({
       message: `Peça "${show.name}" removida com ${plural(counts.days, 'dia', 'dias')} e ${plural(
         counts.cues,
-        'cue',
-        'cues',
+        'música',
+        'músicas',
       )}.`,
       tone: 'warn',
       action: { label: 'Desfazer', run: () => void run(() => repo.restoreShow(removed)) },
@@ -153,7 +153,7 @@ export function ShowsPanel({
                     className="icon-btn"
                     onClick={() => void duplicate(show)}
                     aria-label={`Duplicar peça ${show.name}`}
-                    title="Duplicar com dias, cenas e cues"
+                    title="Duplicar com dias, cenas e músicas"
                   >
                     <CopyIcon size={14} />
                   </button>

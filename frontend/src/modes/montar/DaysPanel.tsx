@@ -81,8 +81,8 @@ export function DaysPanel({
     push({
       message: `"${day.name}" copiado com ${plural(counts.scenes, 'cena', 'cenas')} e ${plural(
         counts.cues,
-        'cue',
-        'cues',
+        'música',
+        'músicas',
       )}. Ajuste o nome e a data.`,
     })
   }
@@ -120,7 +120,7 @@ export function DaysPanel({
         <h2 className="panel__title">Dias de “{show.name}”</h2>
         <p className="panel__hint">
           Uma linha por apresentação. Para uma temporada em que todas as noites são iguais, monte o
-          primeiro dia e duplique — cenas e cues vão junto, e daí em diante cada dia muda sozinho.
+          primeiro dia e duplique — cenas e músicas vão junto, e daí em diante cada dia muda sozinho.
         </p>
       </header>
 
@@ -186,7 +186,7 @@ export function DaysPanel({
                     className="icon-btn"
                     onClick={() => void duplicate(day)}
                     aria-label={`Duplicar dia ${day.name}`}
-                    title="Duplicar com cenas e cues"
+                    title="Duplicar com cenas e músicas"
                   >
                     <CopyIcon size={14} />
                   </button>

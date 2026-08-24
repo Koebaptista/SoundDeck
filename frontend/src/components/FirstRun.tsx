@@ -20,8 +20,8 @@ const STEPS = [
     body: 'Um bloco por momento do espetáculo, na ordem em que acontecem: “Abertura”, “Entrada de Ana”. Dias iguais se montam uma vez e se duplicam.',
   },
   {
-    title: 'Monte os cues',
-    body: 'Cada cue liga um áudio a uma deixa — o que acontece no palco quando ele deve tocar. No espetáculo, um clique no cue põe o som no ar.',
+    title: 'Monte as músicas',
+    body: 'Cada música entra numa cena com a sua deixa — o que acontece no palco na hora em que ela deve tocar. No espetáculo, um clique nela põe o som no ar.',
   },
 ]
 

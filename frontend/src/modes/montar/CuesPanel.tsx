@@ -42,7 +42,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
           <p className="empty__title">
             {day ? `Nenhuma cena em “${day.name}”` : 'Crie uma cena primeiro'}
           </p>
-          <p className="empty__body">Cues moram dentro de cenas — sem cena não há onde guardá-los.</p>
+          <p className="empty__body">As músicas moram dentro de cenas — sem cena não há onde guardá-las.</p>
           <button type="button" className="btn btn--primary" onClick={onGoScenes}>
             Ir para cenas
           </button>
@@ -63,7 +63,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
   }
 
   const remove = async (cue: Cue) => {
-    const name = audioOf(cue.audioId)?.name ?? 'Cue'
+    const name = audioOf(cue.audioId)?.name ?? 'Música'
     const removed = await run(() => repo.deleteCue(cue.id))
     if (!removed) return
     push({
@@ -92,7 +92,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
   return (
     <section className="panel">
       <header className="panel__head">
-        <h2 className="panel__title">Cues da cena</h2>
+        <h2 className="panel__title">Músicas da cena</h2>
         <label className="panel__scene">
           <span className="sr-only">Cena em edição</span>
           <select
@@ -117,14 +117,14 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
       {deck.audios.length === 0 ? (
         <div className="empty empty--inline">
           <p className="empty__title">A biblioteca está vazia</p>
-          <p className="empty__body">Envie um áudio antes de montar cues.</p>
+          <p className="empty__body">Envie um áudio antes de montar as músicas.</p>
           <button type="button" className="btn btn--primary" onClick={onGoLibrary}>
             Ir para a biblioteca
           </button>
         </div>
       ) : cues.length === 0 ? (
         <div className="empty empty--inline">
-          <p className="empty__title">Nenhum cue nesta cena ainda</p>
+          <p className="empty__title">Nenhuma música nesta cena ainda</p>
           <p className="empty__body">Escolha um áudio abaixo para criar o primeiro.</p>
         </div>
       ) : (
@@ -140,7 +140,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
                 <div className="cuerow__body">
                   <div className="cuerow__line">
                     <label className="cuerow__audio">
-                      <span className="sr-only">Áudio do cue {index + 1}</span>
+                      <span className="sr-only">Áudio da música {index + 1}</span>
                       <select
                         className="select"
                         value={cue.audioId}
@@ -163,7 +163,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
                         className="icon-btn"
                         disabled={index === 0}
                         onClick={() => void move(index, -1)}
-                        aria-label={`Mover cue ${index + 1} para cima`}
+                        aria-label={`Mover música ${index + 1} para cima`}
                       >
                         <UpIcon size={14} />
                       </button>
@@ -172,7 +172,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
                         className="icon-btn"
                         disabled={index === cues.length - 1}
                         onClick={() => void move(index, 1)}
-                        aria-label={`Mover cue ${index + 1} para baixo`}
+                        aria-label={`Mover música ${index + 1} para baixo`}
                       >
                         <DownIcon size={14} />
                       </button>
@@ -180,7 +180,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
                         type="button"
                         className="icon-btn icon-btn--danger"
                         onClick={() => void remove(cue)}
-                        aria-label={`Remover cue ${index + 1}`}
+                        aria-label={`Remover música ${index + 1}`}
                       >
                         <TrashIcon size={14} />
                       </button>
@@ -188,7 +188,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
                   </div>
 
                   <InlineText
-                    label={`Deixa do cue ${index + 1}`}
+                    label={`Deixa da música ${index + 1}`}
                     value={cue.cue}
                     placeholder="Deixa: o que acontece em cena"
                     onCommit={(value) => void run(() => repo.updateCue(cue.id, { cue: value }))}
@@ -255,7 +255,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
       {deck.audios.length > 0 && (
         <form className="addbar" onSubmit={add}>
           <label className="row__grow">
-            <span className="sr-only">Áudio do novo cue</span>
+            <span className="sr-only">Áudio da nova música</span>
             <select
               className="select"
               value={newAudioId}
@@ -271,7 +271,7 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
           </label>
           <button type="submit" className="btn btn--primary" disabled={!newAudioId}>
             <PlusIcon size={14} />
-            Adicionar cue
+            Adicionar música
           </button>
         </form>
       )}

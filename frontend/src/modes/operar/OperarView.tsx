@@ -87,10 +87,10 @@ export function OperarView({ scene, scenes, onSelectScene, onGoMontar }: Props) 
 
         {cues.length === 0 ? (
           <div className="empty">
-            <p className="empty__title">Nenhum cue nesta cena ainda</p>
+            <p className="empty__title">Nenhuma música nesta cena ainda</p>
             <p className="empty__body">
-              Cues são o que você dispara durante a peça: um áudio da biblioteca mais a deixa que
-              manda tocá-lo.
+              As músicas são o que você dispara durante a peça: um áudio da biblioteca mais a deixa
+              que manda tocá-lo.
             </p>
             <button type="button" className="btn btn--primary" onClick={onGoMontar}>
               Montar esta cena
