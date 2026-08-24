@@ -33,21 +33,28 @@ cp .env.example .env.local   # VITE_DATA=api
 IndexedDB) e `apiRepo` (cliente HTTP do DRF) implementam a mesma interface, e
 nenhum componente importa qualquer um dos dois diretamente.
 
-O contrato que o backend precisa expor está escrito em `src/data/apiRepo.ts`:
+O contrato está escrito em `src/data/apiRepo.ts` e implementado em
+`../backend` (rodar: `python manage.py runserver 127.0.0.1:8000`):
 
 | Método | Rota |
 |---|---|
-| `load` | `GET /api/deck/` → `{ scenes, audios, cues }` |
+| `load` | `GET /api/deck/` → `{ shows, days, scenes, audios, cues }` |
+| `createShow` · `updateShow` · `deleteShow` | `/api/shows/` · `/api/shows/:id/` |
+| `reorderShows` · `restoreShow` · `duplicateShow` | `/api/shows/reorder/` · `/api/shows/restore/` · `/api/shows/:id/duplicate/` |
+| `createDay` · `updateDay` · `deleteDay` | `/api/days/` · `/api/days/:id/` |
+| `reorderDays` · `restoreDay` · `duplicateDay` | `/api/days/reorder/` · `/api/days/restore/` · `/api/days/:id/duplicate/` |
 | `createScene` · `renameScene` · `deleteScene` | `/api/scenes/` · `/api/scenes/:id/` |
 | `reorderScenes` · `restoreScene` | `/api/scenes/reorder/` · `/api/scenes/restore/` |
+| `moveScene` · `copyScene` | `/api/scenes/:id/move/` · `/api/scenes/:id/copy/` |
 | `createCue` · `updateCue` · `deleteCue` | `/api/cues/` · `/api/cues/:id/` |
 | `reorderCues` · `restoreCues` | `/api/cues/reorder/` · `/api/cues/restore/` |
 | `addAudio` (multipart) · `updateAudio` · `deleteAudio` | `/api/audios/` · `/api/audios/:id/` |
 | `restoreAudio` | `/api/audios/restore/` |
 
-`DELETE` de cena e de áudio devolvem o que foi removido, porque o desfazer da
-interface reinsere exatamente aquilo. As rotas `restore/` existem pelo mesmo
-motivo — o produto não pergunta “tem certeza?”, ele desfaz.
+`DELETE` de peça, dia, cena e áudio devolvem o que foi removido, porque o
+desfazer da interface reinsere exatamente aquilo — com os mesmos ids e na
+mesma posição. As rotas `restore/` existem pelo mesmo motivo: o produto não
+pergunta “tem certeza?”, ele desfaz.
 
 **Nenhuma chamada ao backend acontece no caminho do disparo.** O servidor
 entrega o deck no carregamento e some; durante a peça a rede pode cair sem que
