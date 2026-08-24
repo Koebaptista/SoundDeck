@@ -1,19 +1,20 @@
-import { useEffect, useState } from 'react'
-import { useActiveScene, useDeck } from './state/deck'
+import { useEffect, useMemo, useState } from 'react'
+import { useDeck, useSelection } from './state/deck'
 import { useAudioLocked } from './audio/useEngine'
 import { engine } from './audio/engine'
 import { repo, usingMock } from './data'
 import { emptyMock, resetMock } from './data/mockRepo'
 import { TopBar } from './components/TopBar'
+import { ProgramBar } from './components/ProgramBar'
 import { StopAll } from './components/StopAll'
 import { ToastRegion } from './components/ToastRegion'
 import { FirstRun } from './components/FirstRun'
 import { OperarView } from './modes/operar/OperarView'
-import { MontarView } from './modes/montar/MontarView'
+import { MontarView, type MontarTab } from './modes/montar/MontarView'
 import { CloseIcon, WarnIcon } from './icons'
 
 /**
- * Casca do produto: barra superior, palco, faixa de parar.
+ * Casca do produto: barra superior, contexto, palco, faixa de parar.
  *
  * A faixa `PARAR TUDO` fica fora dos modos de propósito: vale também no modo
  * montar, onde o operador testa cues e pode precisar interromper tudo do mesmo
@@ -24,9 +25,13 @@ import { CloseIcon, WarnIcon } from './icons'
 type Mode = 'operar' | 'montar'
 
 export function App() {
-  const { status, error, deck, reload, writeError, dismissWriteError } = useDeck()
+  const { status, error, deck, cuesOf, reload, writeError, dismissWriteError } = useDeck()
   const [mode, setMode] = useState<Mode>('operar')
-  const { active, select } = useActiveScene(deck.scenes)
+  // A aba do montar mora aqui porque não é só o montar que a escolhe: o
+  // seletor de peça manda abrir "Dias" quando a peça escolhida não tem
+  // nenhum, e essa é a única saída do beco.
+  const [montarTab, setMontarTab] = useState<MontarTab>('cenas')
+  const { show, day, scene, days, scenes, selectShow, selectDay, selectScene } = useSelection(deck)
   const locked = useAudioLocked()
 
   // O navegador só libera áudio depois de um gesto. Qualquer gesto serve, e
@@ -41,11 +46,37 @@ export function App() {
     }
   }, [])
 
-  const empty = status === 'ready' && deck.scenes.length === 0 && deck.audios.length === 0
+  const cueCount = useMemo(
+    () => scenes.reduce((total, item) => total + cuesOf(item.id).length, 0),
+    [scenes, cuesOf],
+  )
+
+  /** Projeto recém-instalado: nem peça, nem áudio. */
+  const bare = status === 'ready' && deck.shows.length === 0 && deck.audios.length === 0
+  // O primeiro uso só toma a tela no modo operar. No montar ele atrapalharia
+  // justamente quem já clicou em "começar a montar".
+  const firstRun = bare && mode === 'operar'
 
   return (
     <div className="shell" data-mode={mode}>
       <TopBar mode={mode} onMode={setMode} />
+
+      {status === 'ready' && !firstRun && show && (
+        <ProgramBar
+          mode={mode}
+          show={show}
+          days={days}
+          day={day}
+          sceneCount={scenes.length}
+          cueCount={cueCount}
+          onSelectShow={selectShow}
+          onSelectDay={selectDay}
+          onEditDays={() => {
+            setMode('montar')
+            setMontarTab('dias')
+          }}
+        />
+      )}
 
       {locked && (
         <div className="banner banner--warn" role="status">
@@ -87,7 +118,7 @@ export function App() {
         </div>
       )}
 
-      {empty && (
+      {firstRun && (
         <FirstRun
           onStart={() => setMode('montar')}
           onSeed={
@@ -102,19 +133,30 @@ export function App() {
       )}
 
       {status === 'ready' &&
-        !empty &&
+        !firstRun &&
         (mode === 'operar' ? (
           <OperarView
-            scene={active}
-            scenes={deck.scenes}
-            onSelectScene={select}
+            scene={scene}
+            scenes={scenes}
+            onSelectScene={selectScene}
             onGoMontar={() => setMode('montar')}
           />
         ) : (
-          <MontarView scene={active} scenes={deck.scenes} onSelectScene={select} />
+          <MontarView
+            tab={montarTab}
+            onTab={setMontarTab}
+            show={show}
+            day={day}
+            days={days}
+            scene={scene}
+            scenes={scenes}
+            onSelectShow={selectShow}
+            onSelectDay={selectDay}
+            onSelectScene={selectScene}
+          />
         ))}
 
-      {usingMock && mode === 'montar' && !empty && (
+      {usingMock && mode === 'montar' && (
         <div className="mockbar">
           <span className="hint">
             Dados de exemplo, guardados neste navegador — o backend Django ainda não está ligado.
@@ -144,7 +186,7 @@ export function App() {
 
       {/* Sem um único áudio no projeto, nada pode tocar — e um botão de pânico
           que nunca terá o que fazer só rouba a atenção do primeiro passo. */}
-      {!empty && <StopAll />}
+      {!bare && <StopAll />}
       <ToastRegion />
     </div>
   )

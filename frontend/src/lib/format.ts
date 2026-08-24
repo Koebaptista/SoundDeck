@@ -38,3 +38,19 @@ export function bytes(size?: number): string {
 export function plural(count: number, one: string, many: string): string {
   return `${count} ${count === 1 ? one : many}`
 }
+
+/**
+ * Data de uma apresentação: `sáb 12/04`. Vazio quando a data ainda não fechou.
+ *
+ * Curta de propósito — na barra ela divide espaço com o nome do dia, e o ano
+ * não ajuda ninguém a saber se é hoje que se sobe ao palco.
+ */
+export function showDate(iso: string | null): string {
+  if (!iso) return ''
+  const [year, month, day] = iso.split('-').map(Number)
+  if (!year || !month || !day) return ''
+  const weekday = new Date(year, month - 1, day)
+    .toLocaleDateString('pt-BR', { weekday: 'short' })
+    .replace('.', '')
+  return `${weekday} ${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}`
+}

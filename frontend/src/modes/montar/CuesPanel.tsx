@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import type { Cue, Scene } from '../../types'
+import type { Cue, Day, Scene } from '../../types'
 import { repo } from '../../data'
+import { blurOnWheel } from '../../lib/select'
 import { useDeck } from '../../state/deck'
 import { useToasts } from '../../state/toasts'
 import { useStatuses } from '../../audio/useEngine'
@@ -19,6 +20,7 @@ import { DownIcon, PlayIcon, PlusIcon, TrashIcon, UpIcon, WarnIcon } from '../..
  */
 
 type Props = {
+  day: Day | null
   scene: Scene | null
   scenes: Scene[]
   onSelectScene: (id: string) => void
@@ -26,7 +28,7 @@ type Props = {
   onGoScenes: () => void
 }
 
-export function CuesPanel({ scene, scenes, onSelectScene, onGoLibrary, onGoScenes }: Props) {
+export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGoScenes }: Props) {
   const { deck, cuesOf, audioOf, run } = useDeck()
   const { push } = useToasts()
   const statuses = useStatuses()
@@ -47,7 +49,9 @@ export function CuesPanel({ scene, scenes, onSelectScene, onGoLibrary, onGoScene
     return (
       <section className="panel">
         <div className="empty empty--inline">
-          <p className="empty__title">Crie uma cena primeiro</p>
+          <p className="empty__title">
+            {day ? `Nenhuma cena em “${day.name}”` : 'Crie uma cena primeiro'}
+          </p>
           <p className="empty__body">Cues moram dentro de cenas — sem cena não há onde guardá-los.</p>
           <button type="button" className="btn btn--primary" onClick={onGoScenes}>
             Ir para cenas
@@ -104,6 +108,7 @@ export function CuesPanel({ scene, scenes, onSelectScene, onGoLibrary, onGoScene
           <select
             className="select"
             value={scene?.id ?? ''}
+            onWheel={blurOnWheel}
             onChange={(e) => onSelectScene(e.target.value)}
           >
             {scenes.map((s, i) => (
@@ -114,7 +119,7 @@ export function CuesPanel({ scene, scenes, onSelectScene, onGoLibrary, onGoScene
           </select>
         </label>
         <p className="panel__hint">
-          A deixa é o que o operador procura durante a peça — escreva o que acontece no palco, não o
+          {day && <>Roteiro de “{day.name}”. </>}A deixa é o que o operador procura durante a peça — escreva o que acontece no palco, não o
           nome do arquivo.
         </p>
       </header>
@@ -149,6 +154,7 @@ export function CuesPanel({ scene, scenes, onSelectScene, onGoLibrary, onGoScene
                       <select
                         className="select"
                         value={cue.audioId}
+                        onWheel={blurOnWheel}
                         onChange={(e) =>
                           void run(() => repo.updateCue(cue.id, { audioId: e.target.value }))
                         }

@@ -1,20 +1,52 @@
 /**
  * Modelo de domínio do SoundDeck.
  *
- * Vocabulário do teatro, não de software: cena, cue, deixa. Os mesmos nomes
- * aparecem na interface, no repositório e — quando existir — no Django.
+ * Vocabulário do teatro, não de software: peça, dia, cena, cue, deixa. Os
+ * mesmos nomes aparecem na interface, no repositório e — quando existir — no
+ * Django.
+ *
+ * A hierarquia é peça → dia → cena → cue. A biblioteca de áudios fica fora
+ * dela, global ao projeto: o mesmo trovão serve a duas peças em dois teatros.
  */
 
-/** Um bloco do roteiro. A ordem é a ordem do espetáculo. */
+/**
+ * Um espetáculo. O projeto guarda vários — a montagem deste mês e a que volta
+ * no ano que vem, em outro teatro, com outro roteiro.
+ */
+export interface Show {
+  id: string
+  name: string
+  /** Onde acontece: "Teatro Municipal". É o que distingue duas montagens. */
+  venue: string
+  order: number
+}
+
+/**
+ * Uma apresentação da peça. Três noites são três dias, e cada um carrega o
+ * próprio roteiro — na temporada corrida costumam ser iguais, no festival
+ * quase nunca são.
+ */
+export interface Day {
+  id: string
+  showId: string
+  /** Rótulo livre: "Estreia", "Sábado 20h", "Sessão infantil". */
+  name: string
+  /** `YYYY-MM-DD`, ou `null` enquanto a data não está fechada. */
+  date: string | null
+  order: number
+}
+
+/** Um bloco do roteiro de um dia. A ordem é a ordem do espetáculo. */
 export interface Scene {
   id: string
+  dayId: string
   name: string
   order: number
 }
 
 /**
- * Um arquivo de áudio da biblioteca. Reutilizável em várias cenas — quem
- * carrega a configuração de disparo é o cue, não o áudio.
+ * Um arquivo de áudio da biblioteca. Reutilizável em várias cenas, dias e
+ * peças — quem carrega a configuração de disparo é o cue, não o áudio.
  */
 export interface AudioAsset {
   id: string
@@ -46,6 +78,8 @@ export interface Cue {
 
 /** Tudo que o deck precisa para operar, entregue de uma vez no carregamento. */
 export interface Deck {
+  shows: Show[]
+  days: Day[]
   scenes: Scene[]
   audios: AudioAsset[]
   cues: Cue[]

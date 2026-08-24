@@ -1,19 +1,23 @@
 /**
  * Primeiro uso: projeto realmente vazio.
  *
- * Não ensina o produto inteiro — mostra os três passos concretos até o
+ * Não ensina o produto inteiro — mostra os quatro passos concretos até o
  * primeiro som sair pelas caixas, que é o momento em que o operador entende
  * para que serve isto. Nada de tour, nada de tela de boas-vindas.
  */
 
 const STEPS = [
   {
-    title: 'Envie os áudios',
-    body: 'Na aba Biblioteca do modo Montar. Eles ficam neste computador e podem ser usados em qualquer cena.',
+    title: 'Crie a peça e os dias',
+    body: 'Uma peça por espetáculo — com o teatro onde ela acontece. Dentro dela, um dia por apresentação: três noites em cartaz são três dias.',
   },
   {
-    title: 'Crie as cenas do roteiro',
-    body: 'Um bloco por momento do espetáculo, na ordem em que acontecem: “Abertura”, “Entrada de Ana”.',
+    title: 'Envie os áudios',
+    body: 'Na aba Biblioteca do modo Montar. Eles ficam neste computador e servem a qualquer cena, de qualquer peça.',
+  },
+  {
+    title: 'Crie as cenas de cada dia',
+    body: 'Um bloco por momento do espetáculo, na ordem em que acontecem: “Abertura”, “Entrada de Ana”. Dias iguais se montam uma vez e se duplicam.',
   },
   {
     title: 'Monte os cues',
@@ -53,8 +57,8 @@ export function FirstRun({ onStart, onSeed }: { onStart: () => void; onSeed: () 
         </div>
 
         <p className="hint firstrun__note">
-          O exemplo traz sete áudios sintéticos e quatro cenas — serve para testar o deck de verdade
-          antes de subir os seus arquivos.
+          O exemplo traz quatro peças, dez apresentações e sete áudios sintéticos — serve para
+          testar o deck de verdade antes de subir os seus arquivos.
         </p>
       </div>
     </div>

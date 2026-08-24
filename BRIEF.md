@@ -160,9 +160,18 @@ Uma única interface de acesso a dados, com duas implementações intercambiáve
 mock em `localStorage` agora, cliente HTTP do Django depois. Nenhum componente
 sabe qual está ativa.
 
-Entidades: **Cena** (nome, ordem) · **Áudio** (arquivo, nome, descrição,
-duração, formato) · **Cue** (liga cena e áudio; deixa, ordem, tecla, volume,
-loop). O áudio é reutilizável em várias cenas; o cue carrega a configuração.
+Entidades, da mais larga para a mais estreita: **Peça** (nome, local, ordem) ·
+**Dia** (pertence à peça; nome, data, ordem) · **Cena** (pertence ao dia; nome,
+ordem) · **Cue** (liga cena e áudio; deixa, ordem, tecla, volume, loop). Fora
+da hierarquia, global ao projeto: **Áudio** (arquivo, nome, descrição, duração,
+formato).
+
+O mesmo computador opera várias peças, em vários lugares, e uma peça em cartaz
+por três noites são três dias — cada um com o próprio roteiro, porque a sessão
+de domingo raramente é a de sexta. Dias iguais se montam uma vez e se duplicam
+com cenas e cues junto; uma cena pode ser realocada de um dia para outro sem ser
+remontada. O áudio é reutilizável por todas as peças; o cue carrega a
+configuração.
 
 Para o mock ser realmente tocável, o projeto gera arquivos WAV sintéticos
 (campainha, porta, trovão, passos, música de entrada) — dados falsos que

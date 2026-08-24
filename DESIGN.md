@@ -135,10 +135,46 @@ active, disabled, loading, error. Vocabulário idêntico em todas as telas.
   `--live`, barra de progresso e rótulo textual — quatro sinais, nunca só cor.
 - **Painel Tocando agora** — uma linha por áudio ativo: nome, progresso, tempo
   restante, volume, loop, pausar, reiniciar, parar.
+- **Barra de contexto** — a faixa abaixo da barra superior, que diz qual peça e
+  qual dia estão carregados. **Uma só natureza nos dois modos**: rótulo (`Peça`,
+  `Dia 2 de 5`) em `--fs-micro`, nome em `--fs-md` sobre `--ink`, local e data
+  em `--ink-3`, contagens à direita e um botão `Trocar` com moldura que abre o
+  seletor. No montar ela sobe para `--surface` e alinha à coluna de 900px — a
+  diferença de material continua anunciando em qual tela se está, mas o
+  conteúdo e os controles são os mesmos.
+
+  Ela nasceu com duas naturezas — mostrador travado no operar, par de
+  `<select>` no montar — e as duas falhavam pelo mesmo motivo: em `--fs-sm`,
+  numa faixa de 34px, o que estava carregado se lia com esforço, e a porta para
+  trocar era um `btn--ghost` no canto, isto é, um controle terciário pintado
+  sobre a ação principal daquela faixa.
+
+  **Nenhum campo de escolha vive aqui**, e agora isso vale nos dois modos: um
+  `<select>` com foco muda de valor no giro da roda do mouse, e trocar o
+  roteiro inteiro em silêncio é o acidente que este produto não pode ter. O que
+  existe é um clique deliberado que abre um diálogo, e `Esc` o dispensa sem ter
+  mudado nada.
+
+- **Seletor de peça e dia** — `<dialog>` de 760px, duas listas lado a lado:
+  peças à esquerda, dias da peça em foco à direita. Alvos de 60px, nome em
+  `--fs-md`, local/data/contagens em `--ink-3`. A esquerda só muda o que a
+  direita mostra; é o clique no dia que carrega o roteiro e fecha. O que já
+  está no deck se marca por forma — moldura `--ink-3` e sinal de conferido —,
+  nunca por cor: verde aqui significaria som no ar. Nada nesta superfície
+  renomeia, reordena ou apaga.
 - **PARAR TUDO** — faixa fixa inferior, borda a borda. Sempre presente e sempre
   reconhecível; contorno `--stop` em repouso, preenchimento sólido `--stop`
   quando há som tocando (isto é, quando o botão tem o que fazer), com a
   contagem de áudios ativos no rótulo.
+- **Linha de lista (montar)** — número do roteiro, nome como **campo
+  silencioso** (`.input--quiet`: sem moldura em repouso, moldura no hover e no
+  foco) em `--fs-md`, qualificadores secundários, uma coluna de contagens com
+  largura de piso que serve de link para o nível de baixo, e o bloco
+  destrutivo na borda. A linha carregada muda de material (`--surface-hi`,
+  borda `--ink-3`) e carrega a marca `Em cartaz` — três sinais, nenhum deles
+  cor. Dez nomes dentro de dez molduras iguais viram dez caixas; a moldura
+  repetida é que rouba a leitura, não o texto.
+
 - **Vazio** — estados vazios ensinam o próximo passo concreto ("Adicione a
   primeira cena"), nunca "nenhum item encontrado".
 - **Carregando** — esqueleto na forma do conteúdo. Sem spinner centralizado.

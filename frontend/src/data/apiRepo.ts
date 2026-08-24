@@ -1,5 +1,5 @@
-import type { AudioAsset, Cue, Deck, Scene } from '../types'
-import type { Repo } from './repo'
+import type { AudioAsset, Cue, Day, Deck, Scene, Show } from '../types'
+import type { DayBundle, Repo, SceneBundle, ShowBundle } from './repo'
 
 /**
  * Cliente HTTP do backend Django/DRF.
@@ -78,18 +78,39 @@ export const apiRepo: Repo = {
   async load(): Promise<Deck> {
     const deck = await request<Deck>('/api/deck/')
     return {
+      shows: deck.shows,
+      days: deck.days,
       scenes: deck.scenes,
       cues: deck.cues,
       audios: deck.audios.map((a) => ({ ...a, src: absolute(a.src) })),
     }
   },
 
-  createScene: (name) => request<Scene>('/api/scenes/', json('POST', { name })),
+  createShow: (input) => request<Show>('/api/shows/', json('POST', input)),
+  updateShow: (id, patch) => request<void>(`/api/shows/${id}/`, json('PATCH', patch)),
+  deleteShow: (id) => request<ShowBundle>(`/api/shows/${id}/`, json('DELETE')),
+  restoreShow: (bundle) => request<void>('/api/shows/restore/', json('POST', bundle)),
+  reorderShows: (ids) => request<void>('/api/shows/reorder/', json('POST', { ids })),
+  duplicateShow: (id, input) => request<Show>(`/api/shows/${id}/duplicate/`, json('POST', input)),
+
+  createDay: ({ showId, name, date }) =>
+    request<Day>('/api/days/', json('POST', { show: showId, name, date })),
+  updateDay: (id, patch) => request<void>(`/api/days/${id}/`, json('PATCH', patch)),
+  deleteDay: (id) => request<DayBundle>(`/api/days/${id}/`, json('DELETE')),
+  restoreDay: (bundle) => request<void>('/api/days/restore/', json('POST', bundle)),
+  reorderDays: (showId, ids) =>
+    request<void>('/api/days/reorder/', json('POST', { show: showId, ids })),
+  duplicateDay: (id, input) => request<Day>(`/api/days/${id}/duplicate/`, json('POST', input)),
+
+  createScene: (dayId, name) => request<Scene>('/api/scenes/', json('POST', { day: dayId, name })),
   renameScene: (id, name) => request<void>(`/api/scenes/${id}/`, json('PATCH', { name })),
-  deleteScene: (id) =>
-    request<{ scene: Scene; cues: Cue[] }>(`/api/scenes/${id}/`, json('DELETE')),
-  restoreScene: (scene, cues) => request<void>('/api/scenes/restore/', json('POST', { scene, cues })),
-  reorderScenes: (ids) => request<void>('/api/scenes/reorder/', json('POST', { ids })),
+  deleteScene: (id) => request<SceneBundle>(`/api/scenes/${id}/`, json('DELETE')),
+  restoreScene: (bundle) => request<void>('/api/scenes/restore/', json('POST', bundle)),
+  reorderScenes: (dayId, ids) =>
+    request<void>('/api/scenes/reorder/', json('POST', { day: dayId, ids })),
+  moveScene: (id, dayId) => request<void>(`/api/scenes/${id}/move/`, json('POST', { day: dayId })),
+  copyScene: (id, dayId) =>
+    request<Scene>(`/api/scenes/${id}/copy/`, json('POST', { day: dayId })),
 
   createCue: (input) => request<Cue>('/api/cues/', json('POST', input)),
   updateCue: (id, patch) => request<void>(`/api/cues/${id}/`, json('PATCH', patch)),

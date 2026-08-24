@@ -5,7 +5,7 @@
  * pausar, parar — são formas, e formas sólidas se leem de relance no escuro),
  * **ação é contorno** de 1.5px com pontas arredondadas. Grade de 16px.
  *
- * Nenhuma biblioteca de ícones entra no projeto: sete glifos não justificam a
+ * Nenhuma biblioteca de ícones entra no projeto: um punhado de glifos não justifica a
  * dependência, e um segundo conjunto quebraria a coerência.
  */
 
@@ -79,6 +79,14 @@ export const PlusIcon = ({ size = 16, className }: Props) => (
   </svg>
 )
 
+/** Duplicar: duas folhas do mesmo roteiro, uma atrás da outra. */
+export const CopyIcon = ({ size = 16, className }: Props) => (
+  <svg {...stroke(size, className)}>
+    <rect x="5.75" y="5.75" width="7.5" height="7.5" rx="1.5" />
+    <path d="M10.25 3.75a1.5 1.5 0 0 0-1.5-1.5h-4.5a1.5 1.5 0 0 0-1.5 1.5v4.5a1.5 1.5 0 0 0 1.5 1.5" />
+  </svg>
+)
+
 export const TrashIcon = ({ size = 16, className }: Props) => (
   <svg {...stroke(size, className)}>
     <path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8a1 1 0 0 0 1 .9h3.8a1 1 0 0 0 1-.9l.6-8" />
@@ -121,6 +129,21 @@ export const UploadIcon = ({ size = 16, className }: Props) => (
 export const CloseIcon = ({ size = 16, className }: Props) => (
   <svg {...stroke(size, className)}>
     <path d="M4 4l8 8M12 4l-8 8" />
+  </svg>
+)
+
+/** Trocar: duas vias opostas. O botão que abre o seletor de peça e dia. */
+export const SwapIcon = ({ size = 16, className }: Props) => (
+  <svg {...stroke(size, className)}>
+    <path d="M2.75 5.5h9.5M9.75 3l2.5 2.5-2.5 2.5" />
+    <path d="M13.25 10.5h-9.5M6.25 8l-2.5 2.5 2.5 2.5" />
+  </svg>
+)
+
+/** Avançar um nível na hierarquia: peça → dias, dia → cenas, cena → cues. */
+export const NextIcon = ({ size = 16, className }: Props) => (
+  <svg {...stroke(size, className)}>
+    <path d="M6 3.5 10.5 8 6 12.5" />
   </svg>
 )
 

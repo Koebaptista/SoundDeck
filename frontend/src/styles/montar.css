@@ -92,8 +92,64 @@
   background: var(--surface);
 }
 
+/**
+ * A linha carregada no deck.
+ *
+ * Só a borda subindo de --line para --line-hi era um degrau que ninguém achava
+ * numa lista de dez. Agora ela muda de material — superfície elevada e borda
+ * de --ink-3 —, e ainda carrega a marca "Em cartaz" escrita. Três sinais, e
+ * nenhum deles é cor: o acento verde significa som no ar e nada mais.
+ */
 .row[data-active] {
+  border-color: var(--ink-3);
+  background: var(--surface-hi);
+}
+
+/**
+ * Descer um nível: "6 cenas · 18 cues ›".
+ *
+ * Era um .btn--ghost, isto é, indistinguível de texto solto — e ainda assim
+ * era o único jeito de abrir o dia. A moldura no hover e a seta que avança
+ * dizem o que ele faz antes do clique.
+ */
+.rowlink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: none;
+  gap: var(--sp-2);
+  /* Largura de piso para a coluna de contagens não serrilhar de linha em
+     linha: "6 cenas · 18 cues" e "4 cenas · 9 cues" têm larguras diferentes, e
+     sem piso cada seta pousa num x diferente. */
+  min-width: 148px;
+  min-height: 32px;
+  padding: 0 var(--sp-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.rowlink:hover {
+  background: var(--surface-hi);
   border-color: var(--line-hi);
+  color: var(--ink);
+}
+
+.rowlink__go {
+  color: var(--ink-3);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.rowlink:hover .rowlink__go {
+  color: var(--ink);
+  transform: translateX(2px);
 }
 
 .row__num {
@@ -103,8 +159,15 @@
   min-width: 2.4ch;
 }
 
+/**
+ * O nome ocupa a sobra da linha — mas com base real, não zero.
+ *
+ * Com `flex-basis: 0` a linha nunca quebra: o nome encolhe até virar
+ * "Sessão da escola do ba…" e o `flex-wrap` do modo estreito nunca dispara.
+ * Uma base de 220px é o piso abaixo do qual é a linha que cede, não o texto.
+ */
 .row__grow {
-  flex: 1;
+  flex: 1 1 220px;
   min-width: 0;
 }
 
@@ -112,6 +175,54 @@
   display: flex;
   align-items: center;
   gap: var(--sp-1);
+}
+
+/* Contagem secundária dentro do botão de navegação: "3 dias · 12 cues". */
+.row__aside {
+  margin-left: var(--sp-2);
+  color: var(--ink-3);
+}
+
+/* A marca "Em cartaz" da linha ativa ganha o contraste cheio. */
+.row[data-active] .tag {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+/* Nome e local dividem a linha da peça; o local cede primeiro quando aperta. */
+.showrow__fields {
+  display: flex;
+  gap: var(--sp-2);
+  flex: 1 1 300px;
+  min-width: 0;
+}
+
+.showrow__name {
+  flex: 1 1 44%;
+  min-width: 0;
+}
+
+.showrow__venue {
+  flex: 1 1 56%;
+  min-width: 0;
+}
+
+/* A data é qualificador do nome, não concorrente dele: corpo e tom secundários. */
+.dayrow__date {
+  flex: none;
+  width: 148px;
+}
+
+.dayrow__date .input {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+/* Realocar a cena em outro dia: o controle mais importante desta lista, e
+   ainda assim discreto — a leitura principal é o nome da cena. */
+.scenerow__day {
+  flex: none;
+  width: 168px;
 }
 
 /* ---------------- cue em edição ---------------- */
@@ -329,6 +440,26 @@
 }
 
 @media (max-width: 820px) {
+  .row {
+    flex-wrap: wrap;
+  }
+
+  /* Quando a linha quebra, o bloco destrutivo vai para a borda oposta ao nome
+     — nunca fica sob o campo que se acabou de editar. */
+  .row__actions {
+    margin-left: auto;
+  }
+
+  .showrow__fields {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+  }
+
+  .showrow__name,
+  .showrow__venue {
+    flex-basis: 100%;
+  }
+
   .montar__inner {
     padding: var(--sp-4) var(--sp-4) calc(var(--sp-12) + var(--stopbar-h));
   }

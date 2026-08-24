@@ -116,6 +116,314 @@
   color: var(--bg);
 }
 
+/* ---------------- barra de contexto: peça e dia ---------------- */
+
+/**
+ * Uma barra só, nos dois modos.
+ *
+ * Antes eram duas: um mostrador travado no operar e um par de `<select>` no
+ * montar. As duas falhavam do mesmo jeito — em 13px, numa faixa de 34px, o que
+ * está carregado se lia com esforço, e a porta para trocar era um botão
+ * fantasma no canto. Agora a barra diz peça e dia em corpo de título, com
+ * rótulo, e a troca é um botão com moldura que abre o seletor no lugar.
+ *
+ * Nenhum campo de escolha vive aqui: a trava contra o giro de roda que troca
+ * o roteiro em silêncio continua inteira, e agora vale nos dois modos.
+ */
+.progbar {
+  flex: none;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.progbar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  min-height: 56px;
+  padding: var(--sp-2) var(--sp-4);
+}
+
+/* No montar ela alinha à coluna de 900px que comanda, e sobe de material: a
+   superfície elevada é o que diz, de relance, em qual das duas telas se está. */
+.progbar--montar {
+  background: var(--surface);
+}
+
+.progbar--montar .progbar__inner {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  padding-inline: var(--sp-6);
+}
+
+/* Rótulo e valor viajam juntos e quebram juntos. */
+.progbar__group {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/**
+ * "Peça" e "Dia 2 de 5" — o rótulo que responde *qual dos dois é este*.
+ *
+ * Sem ele os dois nomes viram uma frase só, e a posição na temporada, que é a
+ * informação que o operador confere antes de começar, some. O número é a
+ * leitura; o rótulo cede peso de propósito.
+ */
+.progbar__label {
+  flex: none;
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.progbar__show,
+.progbar__day {
+  font-size: var(--fs-md);
+  font-weight: 560;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progbar__venue,
+.progbar__date {
+  flex: none;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.progbar__sep {
+  flex: none;
+  width: 1px;
+  height: 26px;
+  background: var(--line);
+}
+
+.progbar__meta {
+  margin-left: auto;
+  flex: none;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* Botão de verdade: moldura, corpo e ícone. É a porta de entrada da troca e
+   não pode se parecer com uma legenda. */
+.progbar__swap {
+  flex: none;
+}
+
+@media (max-width: 900px) {
+  .progbar__inner,
+  .progbar--montar .progbar__inner {
+    gap: var(--sp-3);
+    padding-inline: var(--sp-4);
+  }
+
+  /* Some antes de a barra quebrar: é a informação menos urgente das três. */
+  .progbar__meta {
+    display: none;
+  }
+
+  .progbar__swap {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 680px) {
+  .progbar__inner,
+  .progbar--montar .progbar__inner {
+    flex-wrap: wrap;
+    padding-block: var(--sp-3);
+  }
+
+  .progbar__sep {
+    display: none;
+  }
+
+  .progbar__group {
+    flex: 1 1 100%;
+  }
+
+  .progbar__swap {
+    margin-left: 0;
+    flex: 1 1 100%;
+  }
+}
+
+/* ---------------- seletor de peça e dia ---------------- */
+
+/**
+ * Duas listas lado a lado, alvos grandes, zero campo de formulário.
+ *
+ * A esquerda só muda o que a direita mostra; é o clique no dia que carrega o
+ * roteiro e fecha. Passear pelas peças para conferir as datas não troca nada,
+ * e é justamente essa a diferença entre um seletor e um acidente.
+ */
+.picker {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--sp-4);
+}
+
+.picker__col {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.picker__label {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.picker__of {
+  color: var(--ink-2);
+}
+
+.picker__list {
+  display: grid;
+  gap: var(--sp-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+
+.picker__show,
+.picker__day {
+  width: 100%;
+  min-height: 60px;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.picker__show {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.picker__day {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.picker__show:hover,
+.picker__day:hover {
+  background: var(--surface-hi);
+  border-color: var(--line-hi);
+}
+
+/* A peça cuja lista de dias está aberta à direita. */
+.picker__show[aria-current] {
+  background: var(--surface-hi);
+  border-color: var(--ink);
+}
+
+/* O dia que já está no deck: moldura e marca, nunca cor — verde aqui seria
+   "tem som no ar", e não é isso que esta lista diz. */
+.picker__day[data-live] {
+  border-color: var(--ink-3);
+  background: var(--surface);
+}
+
+.picker__name {
+  display: block;
+  font-size: var(--fs-md);
+  font-weight: 520;
+  letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker__sub,
+.picker__count {
+  display: block;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker__here {
+  color: var(--ink-2);
+}
+
+.picker__date {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.picker__ord {
+  flex: none;
+  min-width: 2.4ch;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.picker__daybody {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.picker__mark {
+  display: inline-flex;
+  flex: none;
+  color: var(--ink);
+}
+
+.picker__go {
+  display: inline-flex;
+  flex: none;
+  color: var(--ink-3);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.picker__day:hover .picker__go {
+  color: var(--ink);
+  transform: translateX(2px);
+}
+
+.picker .empty--inline {
+  padding: var(--sp-6) 0;
+}
+
+@media (max-width: 720px) {
+  .picker {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
+  }
+
+  .picker__list {
+    max-height: 30vh;
+  }
+}
+
 /* ---------------- avisos de barra ---------------- */
 
 .banner {
@@ -882,6 +1190,11 @@
   border-radius: var(--r-lg);
   background: var(--surface);
   color: var(--ink);
+}
+
+/* O seletor de peça carrega duas listas lado a lado; 460px o espremeria. */
+.dialog--wide {
+  width: min(760px, calc(100vw - var(--sp-8)));
 }
 
 .dialog::backdrop {

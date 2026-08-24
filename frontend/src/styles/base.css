@@ -230,6 +230,56 @@ textarea {
   border-color: var(--warn);
 }
 
+/**
+ * Campo silencioso: edita, mas em repouso lê como texto.
+ *
+ * Uma lista de dez dias em que cada nome mora dentro de uma moldura vira dez
+ * caixas iguais — a moldura repetida é que rouba a leitura, não o texto. Aqui
+ * a borda só aparece quando o ponteiro chega ou o foco entra, que é quando ela
+ * significa alguma coisa. O alvo e a altura não mudam: continua um campo de
+ * 36px, clicável no mesmo lugar.
+ */
+.input--quiet {
+  border-color: transparent;
+  background: transparent;
+  padding-inline: var(--sp-2);
+}
+
+.input--quiet:hover,
+.input--quiet:focus {
+  border-color: var(--line-hi);
+  background: var(--bg);
+}
+
+/** O nome do item é o título da linha, e um título tem corpo de título. */
+.input--title {
+  font-size: var(--fs-md);
+  font-weight: 520;
+  letter-spacing: -0.005em;
+}
+
+/**
+ * Marca de estado em lista, sempre acromática.
+ *
+ * "Em cartaz" não é som no ar, então não pode usar o verde: o acento tem um
+ * significado só. O que distingue a linha carregada é forma — moldura, ícone e
+ * palavra —, nunca cor.
+ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--sp-1);
+  height: 24px;
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--line-hi);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
 .hint {
   font-size: var(--fs-sm);
   color: var(--ink-3);

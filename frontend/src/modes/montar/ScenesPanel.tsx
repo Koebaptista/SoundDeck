@@ -1,43 +1,96 @@
 import { useState } from 'react'
-import type { Scene } from '../../types'
+import type { Day, Scene } from '../../types'
 import { repo } from '../../data'
+import { blurOnWheel } from '../../lib/select'
 import { useDeck } from '../../state/deck'
 import { useToasts } from '../../state/toasts'
 import { plural } from '../../lib/format'
 import { InlineText } from '../../components/InlineText'
-import { DownIcon, PlusIcon, TrashIcon, UpIcon } from '../../icons'
+import { CopyIcon, DownIcon, NextIcon, PlusIcon, TrashIcon, UpIcon } from '../../icons'
 
 /**
- * Cenas: renomear, reordenar, remover.
+ * Cenas do dia ativo: renomear, reordenar, realocar, remover.
  *
- * A ordem aqui é a ordem do espetáculo, e a numeração que o operador vê no
- * modo operar sai daqui. Remover não pergunta nada — remove e oferece desfazer.
+ * A ordem aqui é a ordem do espetáculo naquela noite, e a numeração que o
+ * operador vê no modo operar sai daqui. Remover não pergunta nada — remove e
+ * oferece desfazer.
+ *
+ * O seletor de dia em cada linha é o que separa uma temporada de um roteiro
+ * só: a cena que saiu da sessão de sábado vai para a de domingo sem ser
+ * remontada, com os cues junto.
  */
 
 export function ScenesPanel({
+  day,
+  days,
   scenes,
   activeId,
   onSelect,
   onEditCues,
+  onGoDays,
 }: {
+  day: Day | null
+  days: Day[]
   scenes: Scene[]
   activeId: string | null
   onSelect: (id: string) => void
   onEditCues: (id: string) => void
+  onGoDays: () => void
 }) {
   const { cuesOf, run } = useDeck()
   const { push } = useToasts()
   const [name, setName] = useState('')
 
+  if (!day) {
+    return (
+      <section className="panel">
+        <div className="empty empty--inline">
+          <p className="empty__title">Crie um dia primeiro</p>
+          <p className="empty__body">
+            As cenas pertencem a uma apresentação — é o dia que diz qual roteiro sobe ao palco.
+          </p>
+          <button type="button" className="btn btn--primary" onClick={onGoDays}>
+            Ir para dias
+          </button>
+        </div>
+      </section>
+    )
+  }
+
   const move = async (index: number, delta: number) => {
     const next = [...scenes]
-    const target = index + delta
     const a = next[index]
-    const b = next[target]
+    const b = next[index + delta]
     if (!a || !b) return
     next[index] = b
-    next[target] = a
-    await run(() => repo.reorderScenes(next.map((s) => s.id)))
+    next[index + delta] = a
+    await run(() => repo.reorderScenes(day.id, next.map((s) => s.id)))
+  }
+
+  const moveToDay = async (scene: Scene, dayId: string) => {
+    const target = days.find((d) => d.id === dayId)
+    if (!target || target.id === scene.dayId) return
+    const from = scene.dayId
+    const done = await run(() => repo.moveScene(scene.id, dayId))
+    if (done === null) return
+    push({
+      message: `"${scene.name}" agora está em "${target.name}", com ${plural(
+        cuesOf(scene.id).length,
+        'cue',
+        'cues',
+      )}.`,
+      action: { label: 'Desfazer', run: () => void run(() => repo.moveScene(scene.id, from)) },
+    })
+  }
+
+  const copy = async (scene: Scene) => {
+    const created = await run(() => repo.copyScene(scene.id, day.id))
+    if (!created) return
+    onSelect(created.id)
+    push({
+      message: `"${scene.name}" duplicada neste dia, com os cues.`,
+      action: { label: 'Desfazer', run: () => void run(() => repo.deleteScene(created.id)) },
+    })
   }
 
   const remove = async (scene: Scene) => {
@@ -46,10 +99,7 @@ export function ScenesPanel({
     push({
       message: `Cena "${scene.name}" removida com ${plural(removed.cues.length, 'cue', 'cues')}.`,
       tone: 'warn',
-      action: {
-        label: 'Desfazer',
-        run: () => void run(() => repo.restoreScene(removed.scene, removed.cues)),
-      },
+      action: { label: 'Desfazer', run: () => void run(() => repo.restoreScene(removed)) },
     })
   }
 
@@ -57,7 +107,7 @@ export function ScenesPanel({
     event.preventDefault()
     const trimmed = name.trim()
     if (!trimmed) return
-    const scene = await run(() => repo.createScene(trimmed))
+    const scene = await run(() => repo.createScene(day.id, trimmed))
     setName('')
     if (scene) onSelect(scene.id)
   }
@@ -65,15 +115,18 @@ export function ScenesPanel({
   return (
     <section className="panel">
       <header className="panel__head">
-        <h2 className="panel__title">Cenas</h2>
+        <h2 className="panel__title">Cenas de “{day.name}”</h2>
         <p className="panel__hint">
-          A ordem desta lista é a ordem do roteiro. Ela vira a numeração que aparece no deck.
+          A ordem desta lista é a ordem do roteiro desta apresentação, e vira a numeração que aparece
+          no deck.
+          {days.length > 1 &&
+            ' O seletor de dia em cada linha realoca a cena inteira, com os cues dela.'}
         </p>
       </header>
 
       {scenes.length === 0 ? (
         <div className="empty empty--inline">
-          <p className="empty__title">Nenhuma cena ainda</p>
+          <p className="empty__title">Nenhuma cena neste dia</p>
           <p className="empty__body">
             Uma cena é um bloco do roteiro — “Abertura”, “Entrada de Ana”. Os cues moram dentro
             delas.
@@ -87,18 +140,52 @@ export function ScenesPanel({
 
               <div className="row__grow">
                 <InlineText
+                  className="input--quiet input--title"
                   label={`Nome da cena ${index + 1}`}
                   value={scene.name}
                   required
-                  onCommit={(name) => void run(() => repo.renameScene(scene.id, name))}
+                  onCommit={(value) => void run(() => repo.renameScene(scene.id, value))}
                 />
               </div>
 
-              <button type="button" className="btn btn--ghost" onClick={() => onEditCues(scene.id)}>
-                {plural(cuesOf(scene.id).length, 'cue', 'cues')}
+              <button
+                type="button"
+                className="rowlink"
+                onClick={() => onEditCues(scene.id)}
+                aria-label={`Abrir os cues de ${scene.name}`}
+              >
+                <span className="num">{plural(cuesOf(scene.id).length, 'cue', 'cues')}</span>
+                <NextIcon size={13} className="rowlink__go" />
               </button>
 
+              {days.length > 1 && (
+                <label className="scenerow__day">
+                  <span className="sr-only">Dia da cena {scene.name}</span>
+                  <select
+                    className="select"
+                    value={scene.dayId}
+                    onWheel={blurOnWheel}
+                    onChange={(e) => void moveToDay(scene, e.target.value)}
+                  >
+                    {days.map((item, position) => (
+                      <option key={item.id} value={item.id}>
+                        {`${String(position + 1).padStart(2, '0')} · ${item.name}`}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
               <div className="row__actions">
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => void copy(scene)}
+                  aria-label={`Duplicar cena ${scene.name}`}
+                  title="Duplicar neste dia, com os cues"
+                >
+                  <CopyIcon size={14} />
+                </button>
                 <button
                   type="button"
                   className="icon-btn"

@@ -13,7 +13,7 @@ const KEYS: { keys: string[]; what: string }[] = [
   { keys: ['1', '…', '9'], what: 'dispara o cue com aquela tecla, dentro da cena ativa' },
   { keys: ['Esc'], what: 'para tudo imediatamente' },
   { keys: ['Espaço'], what: 'congela e solta todo o áudio no ar' },
-  { keys: ['↑', '↓'], what: 'muda de cena' },
+  { keys: ['↑', '↓'], what: 'muda de cena, dentro do dia em cartaz' },
   { keys: ['Enter'], what: 'dispara o cue que está com o foco do teclado' },
 ]
 
@@ -52,7 +52,9 @@ export const ShortcutsDialog = forwardRef<HTMLDialogElement>(function ShortcutsD
 
       <p className="dialog__note">
         As teclas de cue valem só dentro da cena ativa — a mesma tecla pode existir em toda cena sem
-        conflito. Nada dispara enquanto você digita em um campo de texto.
+        conflito. Nada dispara enquanto você digita em um campo de texto. A peça e o dia não têm
+        atalho de propósito: eles se trocam pelo botão “Trocar” da barra de contexto, porque mudar
+        de roteiro precisa ser uma decisão, nunca um deslize.
       </p>
     </dialog>
   )
