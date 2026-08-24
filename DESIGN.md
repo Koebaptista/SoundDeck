@@ -135,7 +135,10 @@ active, disabled, loading, error. Vocabulário idêntico em todas as telas.
   tocando / falhou. "Tocando" traz preenchimento `--live-bg`, borda
   `--live`, barra de progresso e rótulo textual — quatro sinais, nunca só cor.
 - **Painel Tocando agora** — uma linha por áudio ativo: nome, progresso, tempo
-  restante, volume, loop, pausar, reiniciar, parar.
+  restante, volume, loop, pausar, reiniciar, parar. A barra de progresso é
+  também o transporte: clicar nela leva o som ao ponto clicado, e o arrasto
+  move o ponteiro sem soar até ser solto. Ao lado do pausar, dois saltos de dez
+  segundos — o gesto de quem perdeu a deixa e precisa alcançá-la.
 - **Barra de contexto** — a faixa abaixo da barra superior, que diz qual peça e
   qual dia estão carregados. **Uma só natureza nos dois modos**: rótulo (`Peça`,
   `Dia 2 de 5`) em `--fs-micro`, nome em `--fs-md` sobre `--ink`, local e data

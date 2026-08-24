@@ -65,6 +65,39 @@ export const RestartIcon = ({ size = 16, className }: Props) => (
   </svg>
 )
 
+/**
+ * Retroceder e avançar dez segundos.
+ *
+ * O arco é o mesmo do reinício — espelhado num sentido e no outro — e o número
+ * vai dentro dele. É a única exceção à regra do contorno: um `10` vazado some
+ * na coxia, então ele é sólido, com o arco em volta continuando de contorno.
+ */
+const dez = {
+  x: 8,
+  y: 10.5,
+  textAnchor: 'middle' as const,
+  fontSize: 7,
+  fontWeight: 700,
+  fill: 'currentColor',
+  stroke: 'none',
+}
+
+export const Back10Icon = ({ size = 16, className }: Props) => (
+  <svg {...stroke(size, className)}>
+    <path d="M3 8a5 5 0 1 0 1.6-3.66" />
+    <path d="M2.8 2.4v2.6h2.6" />
+    <text {...dez}>10</text>
+  </svg>
+)
+
+export const Fwd10Icon = ({ size = 16, className }: Props) => (
+  <svg {...stroke(size, className)}>
+    <path d="M13 8a5 5 0 1 1-1.6-3.66" />
+    <path d="M13.2 2.4v2.6h-2.6" />
+    <text {...dez}>10</text>
+  </svg>
+)
+
 export const LoopIcon = ({ size = 16, className }: Props) => (
   <svg {...stroke(size, className)}>
     <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h5A2.5 2.5 0 0 1 13 6.5v.7" />

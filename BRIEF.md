@@ -124,7 +124,9 @@ O que o operador lê de relance, em ordem de peso visual:
 - **Disparos somam.** Vários áudios tocam juntos por padrão; disparar um cue já
   tocando abre uma segunda voz do mesmo som (comportamento correto para efeitos
   curtos repetidos).
-- **Por voz ativa:** pausar, retomar, parar, reiniciar, volume, loop.
+- **Por voz ativa:** pausar, retomar, parar, reiniciar, volume, loop,
+  saltar dez segundos para trás ou para frente, e buscar qualquer ponto
+  clicando ou arrastando a barra de progresso.
 - **Volume master** na barra superior, afetando tudo.
 - **Sem atalhos de teclado, e de propósito.** Existiram — tecla por cue, `ESC`
   para tudo, `ESPAÇO` para pausa geral, setas entre cenas — e foram removidos.

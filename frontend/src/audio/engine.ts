@@ -21,6 +21,9 @@ const RAMP = 0.015
 /** Fade de entrada, curto o bastante para não atrasar o ataque. */
 const ATTACK = 0.003
 
+/** Salto dos botões de avanço e retrocesso, em segundos. */
+export const SKIP = 10
+
 type Entry = {
   asset: AudioAsset
   status: AssetStatus
@@ -365,6 +368,57 @@ export class AudioEngine {
     this.emit()
   }
 
+  /**
+   * Leva a voz para um ponto qualquer do áudio — a barra arrastável e os
+   * botões de dez segundos entram os dois por aqui.
+   *
+   * Pausado, só o deslocamento congelado se move: o som volta de onde o
+   * operador deixou. Tocando, o nó de buffer é trocado por um novo no
+   * deslocamento pedido, com o mesmo cuidado do reinício — o ganho vai a zero
+   * antes de o nó antigo ser solto, porque cortar a onda no meio estala.
+   */
+  seek(voiceId: string, seconds: number) {
+    const voice = this.voices.get(voiceId)
+    if (!voice || voice.ended) return
+    const target = wrap(seconds, voice.duration, voice.loop)
+
+    if (voice.element) {
+      try {
+        voice.element.currentTime = target
+      } catch {
+        /* trecho ainda não baixado; a posição atual continua valendo */
+      }
+      if (voice.paused) voice.pausedAt = target
+    } else if (voice.paused) {
+      voice.pausedAt = target
+    } else {
+      const ctx = this.context()
+      const now = ctx.currentTime
+      voice.gain.gain.cancelScheduledValues(now)
+      voice.gain.gain.setValueAtTime(0, now)
+      voice.gain.gain.linearRampToValueAtTime(voice.volume, now + ATTACK)
+      const old = voice.source
+      // Zerado antes de parar o antigo: assim o `onended` dele reconhece que
+      // já não é o nó vivo e não encerra a voz inteira.
+      voice.source = null
+      if (old) {
+        try {
+          old.stop()
+        } catch {
+          /* já parado */
+        }
+      }
+      this.startBufferSource(voice, target)
+    }
+    this.emit()
+  }
+
+  /** Salto relativo à posição atual: `-10` volta, `+10` avança. */
+  nudge(voiceId: string, delta: number) {
+    if (!this.voices.has(voiceId)) return
+    this.seek(voiceId, this.position(voiceId) + delta)
+  }
+
   stop(voiceId: string) {
     const voice = this.voices.get(voiceId)
     if (!voice || voice.ended) return
@@ -536,6 +590,17 @@ function preloadElement(src: string): Promise<number> {
     el.src = src
     el.load()
   })
+}
+
+/**
+ * Prende a posição ao trecho que existe. Em loop não há começo nem fim: recuar
+ * antes do zero cai no final do áudio, que é o que o operador ouviria mesmo.
+ */
+function wrap(seconds: number, duration: number, loop: boolean): number {
+  if (!Number.isFinite(seconds)) return 0
+  if (duration <= 0) return Math.max(0, seconds)
+  if (loop) return ((seconds % duration) + duration) % duration
+  return Math.min(Math.max(0, seconds), duration)
 }
 
 function describe(err: unknown): string {

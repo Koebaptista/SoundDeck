@@ -967,12 +967,47 @@
   gap: var(--sp-3);
 }
 
+/**
+ * A barra é o transporte, não um enfeite.
+ *
+ * O trilho visível continua com 4px — mais grosso brigaria com o nome logo
+ * acima. O alvo do ponteiro é outra coisa: o preenchimento vertical dá 20px de
+ * área clicável sem engordar o desenho, do mesmo jeito que o `::before` faz nos
+ * botões de ícone.
+ */
+.voice__scrub {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-block: var(--sp-2);
+  cursor: pointer;
+  /* O arrasto é nosso; sem isto o toque rola a lista em vez de buscar. */
+  touch-action: none;
+}
+
+.voice__scrub[aria-disabled='true'] {
+  cursor: default;
+}
+
+.voice__scrub:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
 .voice__track {
   flex: 1;
   height: 4px;
   border-radius: 2px;
   background: var(--live-track);
   overflow: hidden;
+  transition: height var(--dur-fast) var(--ease);
+}
+
+.voice__scrub:hover .voice__track,
+.voice__scrub[data-arrastando] .voice__track {
+  height: 6px;
 }
 
 .voice[data-paused] .voice__track {
@@ -991,6 +1026,39 @@
   background: var(--ink-3);
 }
 
+/**
+ * O ponteiro do arrasto. Só aparece quando há para onde arrastar: em repouso a
+ * borda do preenchimento já diz a posição, e um ponto sempre aceso viraria
+ * ruído em quatro linhas empilhadas.
+ */
+.voice__knob {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  background: var(--live);
+  transform: translateY(-50%) scale(0);
+  transition: transform var(--dur-fast) var(--ease);
+  pointer-events: none;
+}
+
+.voice__scrub:hover .voice__knob,
+.voice__scrub:focus-visible .voice__knob,
+.voice__scrub[data-arrastando] .voice__knob {
+  transform: translateY(-50%) scale(1);
+}
+
+.voice__scrub[aria-disabled='true'] .voice__knob {
+  display: none;
+}
+
+.voice[data-paused] .voice__knob {
+  background: var(--ink-3);
+}
+
 .voice__time {
   font-size: var(--fs-sm);
   color: var(--ink);
@@ -1006,9 +1074,9 @@
 
 .voice__volume {
   flex: 1;
-  min-width: 60px;
+  min-width: 44px;
   display: flex;
-  padding: 0 var(--sp-2);
+  padding: 0 var(--sp-1);
 }
 
 .icon-btn[data-active] {
