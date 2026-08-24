@@ -57,8 +57,8 @@ export function BemVindo({ onClose }: { onClose: () => void }) {
           <div className="bemvindo__text">
             <h3 className="bemvindo__title">Operar ou Montar — no alto da tela</h3>
             <p>
-              <strong>Montar</strong> é a preparação: enviar áudios, criar as cenas e dizer qual
-              tecla dispara o quê. <strong>Operar</strong> é o espetáculo: a tela grande, onde você
+              <strong>Montar</strong> é a preparação: enviar áudios, criar as cenas e anotar a
+              deixa de cada cue. <strong>Operar</strong> é o espetáculo: a tela grande, onde você
               clica para o som sair.
             </p>
             <p className="bemvindo__aside">
@@ -82,16 +82,17 @@ export function BemVindo({ onClose }: { onClose: () => void }) {
               sessão de sábado.
             </p>
             <p className="bemvindo__aside">
-              Ele não apaga nem renomeia nada. Abriu por engano? <kbd>Esc</kbd> fecha sem mudar
-              coisa alguma.
+              Ele não apaga nem renomeia nada. Abriu por engano? O × no canto fecha sem mudar coisa
+              alguma.
             </p>
           </div>
         </li>
       </ol>
 
       <p className="dialog__note">
-        Durante o espetáculo, <kbd>Esc</kbd> para tudo na hora e <kbd>Espaço</kbd> congela o que
-        está no ar. A lista inteira de teclas fica no botão de teclado, no canto direito do alto.
+        Tudo aqui é no mouse — o teclado não dispara nada, de propósito: no escuro da coxia, uma
+        manga que encosta numa tecla poria som no ar no meio da peça. Se precisar cortar tudo de
+        uma vez, a faixa vermelha embaixo faz isso num clique.
       </p>
 
       <form method="dialog" className="bemvindo__done">

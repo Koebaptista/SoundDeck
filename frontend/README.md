@@ -88,9 +88,16 @@ Progresso e contagem regressiva são escritos direto no DOM dentro de
 `requestAnimationFrame`, nunca via estado do React: um deck de 60 cues não pode
 re-renderizar 60 vezes por segundo.
 
-### Atalhos
+### O teclado não opera o deck
 
-`1..9` disparam dentro da **cena ativa** (a mesma tecla pode existir em toda
-cena) · `Esc` para tudo · `Espaço` congela e solta · `↑` `↓` mudam de cena ·
-`Enter` dispara o cue focado. Nada dispara enquanto o foco está num campo de
-texto.
+Não há atalhos, e a ausência é o recurso — `state/teclado.ts` conta a história
+inteira. Havia: `1..9` disparavam na cena ativa, `Esc` parava tudo, `Espaço`
+congelava, as setas trocavam de cena. No escuro da coxia, com gente passando
+atrás da mesa, uma manga que encosta no teclado punha som no ar no meio da
+peça — sem confirmação e sem desfazer, com o teatro inteiro ouvindo.
+
+Remover o `keydown` foi metade do trabalho. A outra metade é que um `<button>`
+dispara com `Enter` e `Espaço` por conta própria, e fica com o foco depois de
+ser clicado: o operador dispara um cue com o mouse e qualquer `Espaço`
+esbarrado repete o disparo. `useTecladoInerte` fecha essa porta enquanto o modo
+operar está na tela, poupando campo de texto e diálogo aberto.

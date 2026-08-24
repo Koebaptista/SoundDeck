@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { Cue, Day, Scene } from '../../types'
 import { repo } from '../../data'
 import { blurOnWheel } from '../../lib/select'
@@ -8,14 +8,13 @@ import { useStatuses } from '../../audio/useEngine'
 import { engine } from '../../audio/engine'
 import { duration as fmtDuration } from '../../lib/format'
 import { InlineText } from '../../components/InlineText'
-import { KeyField } from '../../components/KeyField'
 import { DownIcon, PlayIcon, PlusIcon, TrashIcon, UpIcon, WarnIcon } from '../../icons'
 
 /**
  * Cues da cena ativa.
  *
  * O cue liga um áudio da biblioteca a uma deixa e carrega a configuração de
- * disparo — tecla, volume, loop. O mesmo áudio pode aparecer em várias cenas
+ * disparo — volume, loop. O mesmo áudio pode aparecer em várias cenas
  * com configurações diferentes; quem guarda a diferença é o cue.
  */
 
@@ -35,15 +34,6 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
   const [newAudioId, setNewAudioId] = useState('')
 
   const cues = scene ? cuesOf(scene.id) : []
-
-  /** Teclas repetidas dentro da mesma cena: uma delas nunca vai disparar. */
-  const duplicated = useMemo(() => {
-    const seen = new Map<string, number>()
-    for (const cue of cues) {
-      if (cue.key) seen.set(cue.key, (seen.get(cue.key) ?? 0) + 1)
-    }
-    return new Set([...seen.entries()].filter(([, n]) => n > 1).map(([key]) => key))
-  }, [cues])
 
   if (scenes.length === 0) {
     return (
@@ -166,12 +156,6 @@ export function CuesPanel({ day, scene, scenes, onSelectScene, onGoLibrary, onGo
                         ))}
                       </select>
                     </label>
-
-                    <KeyField
-                      value={cue.key}
-                      duplicated={Boolean(cue.key && duplicated.has(cue.key))}
-                      onChange={(key) => void run(() => repo.updateCue(cue.id, { key }))}
-                    />
 
                     <div className="row__actions">
                       <button

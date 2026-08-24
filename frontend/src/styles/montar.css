@@ -310,39 +310,6 @@
   cursor: pointer;
 }
 
-/* ---------------- tecla de atalho ---------------- */
-
-.keyfield {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex: none;
-}
-
-.keyfield__input {
-  width: 84px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.keyfield__input:focus {
-  border-color: var(--ink);
-}
-
-.keyfield__clear {
-  position: absolute;
-  right: 2px;
-  width: 26px;
-  height: 26px;
-}
-
-.keyfield__warn {
-  display: inline-flex;
-  align-items: center;
-  margin-left: var(--sp-2);
-  color: var(--warn);
-}
-
 /* ---------------- biblioteca ---------------- */
 
 .audio {

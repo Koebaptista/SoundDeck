@@ -1,9 +1,7 @@
-import { useRef } from 'react'
 import { engine } from '../audio/engine'
 import { useMasterVolume, useStatuses } from '../audio/useEngine'
 import { plural } from '../lib/format'
-import { KeyboardIcon, SpeakerIcon, WarnIcon } from '../icons'
-import { ShortcutsDialog } from './ShortcutsDialog'
+import { SpeakerIcon, WarnIcon } from '../icons'
 
 /**
  * Barra superior: em que modo estamos, quanto está armado, volume geral.
@@ -18,7 +16,6 @@ type Mode = 'operar' | 'montar'
 export function TopBar({ mode, onMode }: { mode: Mode; onMode: (mode: Mode) => void }) {
   const statuses = useStatuses()
   const master = useMasterVolume()
-  const dialog = useRef<HTMLDialogElement>(null)
 
   const list = Object.values(statuses)
   const failed = list.filter((s) => s.state === 'failed').length
@@ -77,18 +74,7 @@ export function TopBar({ mode, onMode }: { mode: Mode; onMode: (mode: Mode) => v
           />
           <span className="master__value num">{Math.round(master * 100)}%</span>
         </label>
-
-        <button
-          type="button"
-          className="icon-btn"
-          onClick={() => dialog.current?.showModal()}
-          aria-label="Atalhos de teclado"
-        >
-          <KeyboardIcon size={16} />
-        </button>
       </div>
-
-      <ShortcutsDialog ref={dialog} />
     </header>
   )
 }

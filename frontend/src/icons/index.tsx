@@ -147,13 +147,6 @@ export const NextIcon = ({ size = 16, className }: Props) => (
   </svg>
 )
 
-export const KeyboardIcon = ({ size = 16, className }: Props) => (
-  <svg {...stroke(size, className)}>
-    <rect x="1.5" y="4" width="13" height="8" rx="1.5" />
-    <path d="M4.5 6.5h.01M7 6.5h.01M9.5 6.5h.01M11.5 6.5h.01M5 9.5h6" />
-  </svg>
-)
-
 export const SpeakerIcon = ({ size = 16, className }: Props) => (
   <svg {...stroke(size, className)}>
     <path d="M8.5 3 5 5.8H2.6v4.4H5L8.5 13V3Z" />

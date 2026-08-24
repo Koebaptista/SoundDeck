@@ -21,7 +21,7 @@ const STEPS = [
   },
   {
     title: 'Monte os cues',
-    body: 'Cada cue liga um áudio a uma deixa — o que acontece no palco quando ele deve tocar — e ganha uma tecla.',
+    body: 'Cada cue liga um áudio a uma deixa — o que acontece no palco quando ele deve tocar. No espetáculo, um clique no cue põe o som no ar.',
   },
 ]
 

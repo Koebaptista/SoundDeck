@@ -174,10 +174,21 @@ tela inteira, e os dois parecem decoração até alguém dizer que não são. To
 vez, e não só na primeira, porque quem opera um espetáculo por mês não é
 quem abriu o programa ontem.
 
-**Sem menu, e de propósito.** O menu padrão do Electron traz `Ctrl+R` e
-`Ctrl+W`. Recarregar a página por engano no meio da peça derruba tudo que está
-tocando. Sobraram `F11` (tela cheia) e `F12` (ferramentas de desenvolvedor),
-que o deck não usa.
+**O teclado não opera o deck.** Nenhuma tecla dispara, para, pausa ou troca de
+cena — o produto é de mouse, e `frontend/src/state/teclado.ts` explica por quê.
+Isso vale também para o `Enter` e o `Espaço` que o navegador daria de graça ao
+botão em foco.
+
+**Sem menu, e pelo mesmo motivo.** O menu padrão do Electron traz `Ctrl+R` e
+`Ctrl+W`; recarregar a página por engano no meio da peça derruba tudo que está
+tocando.
+
+As duas únicas teclas vivas no aplicativo são `F11` (tela cheia) e `F12`
+(ferramentas de desenvolvedor). Nenhuma das duas encosta no deck: não fazem
+som, não param som e não trocam o roteiro. Ficaram porque a janela não tem
+menu, e sem elas não haveria como pôr o deck em tela cheia no teatro nem como
+descobrir o que houve na máquina de alguém. Estão na fileira de função, longe
+de onde uma manga passa.
 
 **O servidor não fica órfão.** O `stdin` do processo do servidor é um cano
 vindo do Electron. Se o Electron for encerrado à força, o Windows fecha a outra

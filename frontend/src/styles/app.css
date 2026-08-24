@@ -698,25 +698,6 @@
   background: var(--ink-3);
 }
 
-.cue__key {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 18px;
-  padding: 0 5px;
-  border: 1px solid var(--line-hi);
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: var(--fs-micro);
-  color: var(--ink-3);
-}
-
-.cue[data-state='playing'] .cue__key {
-  border-color: var(--live-track);
-  color: var(--ink-2);
-}
-
 .cue__name {
   font-size: var(--fs-lg);
   font-weight: 560;
@@ -1221,45 +1202,6 @@
   text-wrap: pretty;
 }
 
-.shortcuts {
-  display: grid;
-  gap: var(--sp-2);
-  margin: 0;
-}
-
-.shortcuts__row {
-  display: grid;
-  grid-template-columns: 128px 1fr;
-  align-items: baseline;
-  gap: var(--sp-3);
-}
-
-.shortcuts__row dt {
-  display: flex;
-  gap: var(--sp-1);
-}
-
-.shortcuts__row dd {
-  margin: 0;
-  font-size: var(--fs-sm);
-  color: var(--ink-2);
-}
-
-kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 24px;
-  height: 22px;
-  padding: 0 6px;
-  border: 1px solid var(--line-hi);
-  border-radius: 4px;
-  background: var(--bg);
-  font-family: inherit;
-  font-size: var(--fs-micro);
-  color: var(--ink-2);
-}
-
 /* ---------------- vazios ---------------- */
 
 .empty {
@@ -1512,11 +1454,6 @@ kbd {
   .master__range {
     width: 92px;
   }
-}
-
-.shortcuts__sep {
-  align-self: center;
-  color: var(--ink-3);
 }
 
 /* ---------------- mandar e receber o espetáculo ---------------- */

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { Cue, Scene, Voice } from '../../types'
 import { useDeck } from '../../state/deck'
-import { useShortcuts } from '../../state/shortcuts'
+import { useTecladoInerte } from '../../state/teclado'
 import { useFired, useStatuses, useVoices } from '../../audio/useEngine'
 import { engine } from '../../audio/engine'
 import { plural } from '../../lib/format'
@@ -58,28 +58,9 @@ export function OperarView({ scene, scenes, onSelectScene, onGoMontar }: Props) 
     engine.fire(cue, audio?.name ?? 'Áudio')
   }
 
-  const keymap = useMemo(() => {
-    const map = new Map<string, string>()
-    for (const cue of cues) if (cue.key) map.set(cue.key.toLowerCase(), cue.id)
-    return map
-  }, [cues])
-
-  useShortcuts({
-    enabled: true,
-    keymap,
-    fire: (cueId) => {
-      const cue = cues.find((c) => c.id === cueId)
-      if (cue) fire(cue)
-    },
-    stopAll: () => engine.stopAll(),
-    togglePauseAll: () => engine.togglePauseAll(),
-    moveScene: (delta) => {
-      if (!scene) return
-      const index = scenes.findIndex((s) => s.id === scene.id)
-      const next = scenes[Math.min(scenes.length - 1, Math.max(0, index + delta))]
-      if (next) onSelectScene(next.id)
-    },
-  })
+  // Nada de teclado no palco: o disparo é do mouse, e este gancho existe para
+  // que nem o `Espaço` do navegador acione o botão que acabou de ser clicado.
+  useTecladoInerte(true)
 
   return (
     <div className="stage" data-now={voices.length > 0 ? 'on' : 'off'}>

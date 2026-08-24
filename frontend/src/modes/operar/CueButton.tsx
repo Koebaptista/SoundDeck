@@ -79,7 +79,6 @@ export function CueButton({ cue, audio, status, voices, fired, onFire }: Props) 
             <span className="sr-only">já disparado nesta sessão</span>
           </span>
         )}
-        {cue.key && <kbd className="cue__key num">{cue.key}</kbd>}
       </span>
 
       <span className="cue__name">{audio?.name ?? 'Áudio ausente'}</span>

@@ -15,7 +15,7 @@ espera perceptível, e o operador nunca precisa procurar nada.
 ## 2. Ação primária
 
 **Disparar o cue certo no instante da deixa.** Tudo o mais — cadastrar,
-ordenar, ajustar volume, configurar tecla — é preparação que acontece em outro
+ordenar, ajustar volume, anotar a deixa — é preparação que acontece em outro
 momento e não pode competir por espaço com essa ação.
 
 ## 3. Direção visual
@@ -52,7 +52,7 @@ Decisão estrutural que responde ao medo de clicar no botão errado:
 
 - **OPERAR** — padrão ao abrir. Só disparo. Nenhum botão de excluir, renomear
   ou reordenar existe na tela. Alvos grandes, espaçamento generoso.
-- **MONTAR** — edição de cenas, cues, atalhos e biblioteca. Denso, formulários
+- **MONTAR** — edição de cenas, cues e biblioteca. Denso, formulários
   compactos, tudo destrutivo mora aqui.
 
 A troca é explícita e visível. Durante a peça, o único botão perigoso na tela
@@ -126,10 +126,11 @@ O que o operador lê de relance, em ordem de peso visual:
   curtos repetidos).
 - **Por voz ativa:** pausar, retomar, parar, reiniciar, volume, loop.
 - **Volume master** na barra superior, afetando tudo.
-- **Atalhos:** teclas configuráveis por cue, resolvidas **dentro da cena ativa**
-  — assim `1..9` pode ser reusado em toda cena sem conflito global. `ESC` para
-  tudo. `ESPAÇO` alterna pausa geral. Setas navegam entre cenas. Nenhum atalho
-  dispara enquanto o foco está em um campo de texto.
+- **Sem atalhos de teclado, e de propósito.** Existiram — tecla por cue, `ESC`
+  para tudo, `ESPAÇO` para pausa geral, setas entre cenas — e foram removidos.
+  A rede de segurança virou a armadilha: na coxia escura, uma tecla esbarrada
+  põe som no ar sem confirmação e sem desfazer. O disparo é do mouse, e o modo
+  operar chega a impedir que `Enter` e `ESPAÇO` acionem o botão em foco.
 - **Sem estalo:** toda interrupção aplica uma rampa de ganho de ~15ms. Cortar
   uma onda no meio produz um clique audível nas caixas — inaceitável em sala.
 - **Feedback de disparo** em até 100ms, para o operador saber que o clique
@@ -162,7 +163,7 @@ sabe qual está ativa.
 
 Entidades, da mais larga para a mais estreita: **Peça** (nome, local, ordem) ·
 **Dia** (pertence à peça; nome, data, ordem) · **Cena** (pertence ao dia; nome,
-ordem) · **Cue** (liga cena e áudio; deixa, ordem, tecla, volume, loop). Fora
+ordem) · **Cue** (liga cena e áudio; deixa, ordem, volume, loop). Fora
 da hierarquia, global ao projeto: **Áudio** (arquivo, nome, descrição, duração,
 formato).
 

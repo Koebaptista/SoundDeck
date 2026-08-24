@@ -72,7 +72,7 @@ só, com DPI constante, e tipografia fluida em painel estreito piora a leitura.
 
 | Passo | Tamanho | Uso |
 |---|---|---|
-| `--fs-micro` | 0.6875rem / 11px | rótulos de tecla, metadados |
+| `--fs-micro` | 0.6875rem / 11px | metadados, rótulos discretos |
 | `--fs-sm` | 0.8125rem / 13px | secundário, deixa em cue compacto |
 | `--fs-base` | 0.9375rem / 15px | corpo, formulários |
 | `--fs-md` | 1.125rem / 18px | nome do cue em grade densa |
@@ -130,8 +130,9 @@ Todo componente interativo entrega os sete estados: default, hover, focus,
 active, disabled, loading, error. Vocabulário idêntico em todas as telas.
 
 - **Cue** — o botão de disparo. Nome (grande), deixa (secundária), duração
-  (tabular). Tecla de atalho discreta no canto superior. Estados: armando /
-  pronto / tocando / falhou. "Tocando" traz preenchimento `--live-bg`, borda
+  (tabular). Sem rótulo de tecla: o teclado não dispara nada, e um rótulo que
+  promete o contrário mente no pior momento. Estados: armando / pronto /
+  tocando / falhou. "Tocando" traz preenchimento `--live-bg`, borda
   `--live`, barra de progresso e rótulo textual — quatro sinais, nunca só cor.
 - **Painel Tocando agora** — uma linha por áudio ativo: nome, progresso, tempo
   restante, volume, loop, pausar, reiniciar, parar.

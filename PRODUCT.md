@@ -20,10 +20,13 @@ olhando para o palco, e desvia o olhar por um segundo para clicar. A interface
 é consultada de relance, sob pressão, sem chance de segunda tentativa.
 
 **Frequência:** montagem intensa antes da estreia (cadastro de áudios, cenas,
-atalhos), depois uso puramente operacional e repetido a cada apresentação.
+cues), depois uso puramente operacional e repetido a cada apresentação.
 
-**Entrada primária:** mouse/trackpad. Atalhos de teclado são a rede de
-segurança, não a interface principal.
+**Entrada primária:** mouse/trackpad, e **apenas** ele. O deck já teve atalhos
+de teclado como rede de segurança, e eles saíram: na coxia, no escuro, com
+gente passando atrás da mesa, a tecla esbarrada era mais provável que a tecla
+apertada de propósito — e disparar som no meio da peça não tem confirmação nem
+desfazer. Nenhuma tecla dispara, para, pausa ou troca de cena.
 
 **Escala:** indefinida e crescente. O layout precisa servir tanto a uma peça de
 6 disparos quanto a um roteiro de 60 sem redesenho.
