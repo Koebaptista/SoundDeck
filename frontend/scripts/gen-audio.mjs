@@ -78,6 +78,10 @@ function writeWav(name, samples) {
   buf.writeUInt16LE(2, 32)
   buf.writeUInt16LE(16, 34)
   buf.write('data', 36)
+  // O tamanho do bloco `data`. O navegador toca sem ele, lendo até o fim do
+  // arquivo — mas quem confia no cabeçalho (o Django ao ler a duração, o
+  // Audacity, o `ffprobe`) vê um arquivo de zero segundo.
+  buf.writeUInt32LE(n * 2, 40)
   for (let i = 0; i < n; i++) {
     buf.writeInt16LE(Math.round(clamp(samples[i], -1, 1) * 32767), 44 + i * 2)
   }
