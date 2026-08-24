@@ -1,6 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// `process` é do Node que executa este arquivo, não do navegador. O tsconfig
+// do deck carrega só os tipos de `vite/client`, então declarar o que é usado
+// aqui mantém o `vite.config.ts` dentro da conferência sem puxar @types/node.
+declare const process: { env: Record<string, string | undefined> }
+
 export default defineConfig({
   plugins: [react()],
   server: {
