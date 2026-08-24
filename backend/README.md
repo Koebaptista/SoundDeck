@@ -6,6 +6,9 @@ produto está em `../PRODUCT.md` e as decisões de escopo em `../BRIEF.md`.
 
 ## Rodar
 
+Com Docker, junto do frontend, é `docker compose up` na raiz do repositório
+(ver `../README.md`). Direto na máquina:
+
 ```bash
 python -m venv .venv
 .venv/Scripts/activate            # Windows; no Linux/macOS: source .venv/bin/activate

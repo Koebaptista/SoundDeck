@@ -89,6 +89,19 @@ def database_from_url(url: str) -> dict[str, object]:
 
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
+# Duas escritas ao mesmo tempo — reordenar uma cena e renomear outra — chegam
+# ao SQLite como uma transação de leitura querendo virar de escrita, e essa
+# promoção não espera na fila: ela falha na hora com "database is locked".
+# `IMMEDIATE` faz cada transação já nascer de escrita, então a segunda aguarda
+# em vez de estourar. O `timeout` é essa espera. Nada disso é perceptível numa
+# máquina só, e é o que separa o deck de um 500 no meio da peça quando o disco
+# é mais lento que o local — um volume montado do Windows dentro do Docker, por
+# exemplo, onde o lock do arquivo custa caro.
+SQLITE_OPTIONS = {
+    "timeout": 15,
+    "transaction_mode": "IMMEDIATE",
+}
+
 DATABASES = {
     "default": (
         database_from_url(DATABASE_URL)
@@ -96,6 +109,7 @@ DATABASES = {
         else {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "sounddeck.sqlite3",
+            "OPTIONS": SQLITE_OPTIONS,
         }
     )
 }

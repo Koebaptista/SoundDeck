@@ -6,6 +6,9 @@ em `../DESIGN.md` e as decisões de escopo em `../BRIEF.md`.
 
 ## Rodar
 
+Com Docker, junto do backend, é `docker compose up` na raiz do repositório
+(ver `../README.md`). Direto na máquina:
+
 ```bash
 npm install
 npm run dev      # gera os WAVs de exemplo e sobe em http://127.0.0.1:5173

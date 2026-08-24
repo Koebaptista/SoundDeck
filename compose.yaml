@@ -1,0 +1,47 @@
+# Os dois terminais do README, virados um comando só.
+#
+# O código continua vindo do disco do host (bind mount), não de dentro da
+# imagem: editar `deck/views.py` ou um componente recarrega sozinho, e o banco
+# `sounddeck.sqlite3` e a pasta `media/` seguem sendo os arquivos que já estão
+# aqui — subir o Docker não começa um deck vazio.
+
+services:
+  backend:
+    build: ./backend
+    # `migrate` a cada subida: é idempotente, e evita o deck em branco de quem
+    # clonou o projeto e foi direto ao `up`.
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+      # O .venv do host é do Windows: dentro do contêiner ele não serve para
+      # nada e não pode sombrear os pacotes instalados na imagem.
+      - /app/.venv
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: "True"
+      # `0.0.0.0` é onde o runserver escuta; `localhost`/`127.0.0.1` é o Host
+      # que o navegador manda ao atravessar a porta publicada.
+      DJANGO_ALLOWED_HOSTS: "127.0.0.1,localhost,0.0.0.0,backend"
+      CORS_ORIGINS: "http://127.0.0.1:5173,http://localhost:5173"
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      # node_modules mora no volume, não no host: os binários do esbuild e do
+      # rollup instalados aqui são de Linux, e os do host são de Windows.
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_DATA: api
+      # Endereço visto pelo navegador, que está no host — por isso é a porta
+      # publicada do backend, e não `http://backend:8000`.
+      VITE_API_URL: http://127.0.0.1:8000
+      # Se o hot reload parar de acordar sozinho, o bind mount não está
+      # entregando os eventos de arquivo: descomente e o Vite passa a olhar o
+      # relógio em vez de esperar aviso.
+      # VITE_POLL: "1"
+    depends_on:
+      - backend
