@@ -21,6 +21,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
 
+# A separação entre o que é do programa e o que é do operador.
+#
+# `BASE_DIR` é onde mora o código; no repositório o banco e os áudios ficam ao
+# lado dele, e nada disso incomoda. Dentro do aplicativo instalado o código vai
+# parar numa pasta de programa que o Windows não deixa escrever — e um deck que
+# não consegue gravar o SQLite não abre. `SOUNDDECK_DATA` é a saída: o Electron
+# aponta para a pasta do usuário antes de subir o servidor.
+DATA_DIR = Path(os.getenv("SOUNDDECK_DATA") or BASE_DIR)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+# A interface já compilada, quando ela existe. No desenvolvimento quem serve o
+# deck é o Vite e esta pasta não está aqui; no aplicativo ela vem dentro do
+# pacote, e o Django entrega interface e API pela mesma porta — uma origem só,
+# nenhum CORS no caminho.
+SPA_DIR = BASE_DIR / "spa"
+
 
 def env_list(name: str, default: str) -> list[str]:
     """Lista separada por vírgula, ignorando espaços e itens vazios."""
@@ -108,7 +124,7 @@ DATABASES = {
         if DATABASE_URL
         else {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "sounddeck.sqlite3",
+            "NAME": DATA_DIR / "sounddeck.sqlite3",
             "OPTIONS": SQLITE_OPTIONS,
         }
     )
@@ -124,7 +140,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = DATA_DIR / "media"
 
 # Arquivo de áudio de peça inteira cabe em disco, não em memória: acima deste
 # tamanho o upload é transmitido direto para um arquivo temporário.

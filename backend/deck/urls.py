@@ -39,4 +39,7 @@ urlpatterns = [
     path("audios/", views.audios, name="audios"),
     path("audios/restore/", views.audios_restore, name="audios-restore"),
     path("audios/<str:audio_id>/", views.audio_detail, name="audio-detail"),
+
+    # O espetáculo inteiro como arquivo: sai por GET, entra por POST.
+    path("pacote/", views.pacote_view, name="pacote"),
 ]

@@ -31,6 +31,12 @@ export interface SceneBundle {
   cues: Cue[]
 }
 
+/** O que o servidor entendeu do pacote recebido, para o aviso dizer algo. */
+export interface PacoteRecebido {
+  pecas: string[]
+  audios: number | null
+}
+
 export interface Repo {
   /** Entrega o projeto inteiro de uma vez. Nada de rede no caminho do disparo. */
   load(): Promise<Deck>
@@ -68,6 +74,26 @@ export interface Repo {
   reorderCues(sceneId: string, ids: string[]): Promise<void>
   /** Reinsere um cue removido na posição original — o desfazer do toast. */
   restoreCues(cues: Cue[]): Promise<void>
+
+  /**
+   * O espetáculo inteiro como um arquivo: roteiro e áudios juntos.
+   *
+   * Existe porque quem monta e quem opera raramente são a mesma pessoa. O
+   * banco sozinho não viaja — mandar o roteiro sem os arquivos é mandar uma
+   * lista de cues mudos —, e mandar a pasta de mídia sem o banco é mandar um
+   * punhado de MP3 sem ordem nem deixa.
+   */
+  exportarPacote(): Promise<{ blob: Blob; nome: string }>
+
+  /**
+   * Recebe um pacote e o deixa esperando a próxima abertura do programa.
+   *
+   * Não aplica na hora, e isso é do formato, não da interface: trocar o
+   * arquivo do banco com o servidor lendo dele é o tipo de coisa que o Windows
+   * recusa e que, quando não recusa, corrompe. O aviso da interface precisa
+   * dizer isso — o espetáculo aparece quando o programa reabrir.
+   */
+  importarPacote(file: File): Promise<PacoteRecebido>
 
   addAudio(file: File): Promise<AudioAsset>
   updateAudio(id: string, patch: Partial<Pick<AudioAsset, 'name' | 'description'>>): Promise<void>

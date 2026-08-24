@@ -1518,3 +1518,118 @@ kbd {
   align-self: center;
   color: var(--ink-3);
 }
+
+/* ---------------- mandar e receber o espetáculo ---------------- */
+
+/**
+ * Mesma anatomia da `mockbar`: uma faixa no rodapé do modo montar, com a
+ * explicação empurrando os botões para a direita. Elas nunca aparecem juntas —
+ * a `mockbar` é do mock, esta é do servidor — então repetir a forma é o que
+ * mantém o rodapé com um lugar só, mude quem mudar de dono.
+ */
+.pacotebar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex: none;
+  padding: var(--sp-2) var(--sp-4);
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.pacotebar .hint {
+  flex: 1;
+  min-width: 0;
+}
+
+.dialog__body {
+  font-size: var(--fs-base);
+  color: var(--ink-2);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.dialog__aviso {
+  margin-top: var(--sp-4);
+  align-items: flex-start;
+}
+
+/* A ação que confirma fica à direita, que é onde o olho termina a leitura. */
+.dialog__acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+/* ---------------- bilhete de abertura ---------------- */
+
+.bemvindo {
+  width: min(560px, calc(100vw - var(--sp-8)));
+}
+
+.bemvindo__list {
+  display: grid;
+  gap: var(--sp-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bemvindo__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+/* A réplica do controle não é clicável, e a coluna dela não pode dançar de uma
+   linha para outra: largura fixa mantém os dois textos alinhados. */
+.bemvindo__art {
+  display: flex;
+  justify-content: center;
+  width: 132px;
+  padding-top: 2px;
+}
+
+.bemvindo__text {
+  display: grid;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.bemvindo__title {
+  font-size: var(--fs-base);
+  color: var(--ink);
+}
+
+.bemvindo__aside {
+  color: var(--ink-3);
+}
+
+.bemvindo__swap {
+  pointer-events: none;
+}
+
+.bemvindo__done {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--sp-6);
+}
+
+/**
+ * O segmentado em modo retrato: a mesma peça, sem responder ao mouse.
+ *
+ * `aria-pressed` é de botão e aqui não há botão nenhum — o estado ligado vem
+ * de `data-on`, que não promete interação a leitor de tela algum.
+ */
+.segmented--mostra .segmented__item {
+  cursor: default;
+}
+
+.segmented--mostra .segmented__item[data-on] {
+  background: var(--ink);
+  color: var(--bg);
+}

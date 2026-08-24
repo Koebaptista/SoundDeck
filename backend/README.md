@@ -61,10 +61,19 @@ roteiro, e mover uma cena de dia não deixa dois blocos com o mesmo número.
 | `POST` | `/api/cues/restore/` · `/api/cues/reorder/` | `204` · `204` |
 | `POST` (multipart) `PATCH` `DELETE` | `/api/audios/` · `/api/audios/:id/` | áudio · áudio · `{ audio, cues }` |
 | `POST` | `/api/audios/restore/` | `204` |
+| `GET` `POST` (multipart) | `/api/pacote/` | o espetáculo como `.sounddeck` · `{ aceito, pecas, audios }` |
 
 O JSON é o de `frontend/src/types.ts`, em camelCase (`showId`, `dayId`,
 `sceneId`, `audioId`). Toda falha sai como `{"detail": "frase em português"}`,
 que é o texto que a interface mostra no aviso — `deck/errors.py`.
+
+`/api/pacote/` é a exceção que confirma a regra: não devolve JSON no `GET`, e
+sim um zip com o banco e a pasta de mídia dentro — o espetáculo inteiro num
+arquivo, para atravessar a distância entre quem monta e quem opera. O `POST`
+não aplica o que recebe; deixa o arquivo em `entrada/` e responde o que veio
+dentro dele. Trocar o SQLite com o servidor lendo dele não é seguro, então
+quem aplica é `server.py`, na abertura seguinte. Ver `deck/pacote.py` e
+`deck/entrada.py`.
 
 ## Biblioteca de áudio
 

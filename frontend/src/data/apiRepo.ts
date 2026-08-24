@@ -1,5 +1,5 @@
 import type { AudioAsset, Cue, Day, Deck, Scene, Show } from '../types'
-import type { DayBundle, Repo, SceneBundle, ShowBundle } from './repo'
+import type { DayBundle, PacoteRecebido, Repo, SceneBundle, ShowBundle } from './repo'
 
 /**
  * Cliente HTTP do backend Django/DRF.
@@ -132,4 +132,48 @@ export const apiRepo: Repo = {
     request<{ audio: AudioAsset; cues: Cue[] }>(`/api/audios/${id}/`, json('DELETE')),
   restoreAudio: (audio, cues) =>
     request<void>('/api/audios/restore/', json('POST', { audio: audio.id, cues })),
+
+  async exportarPacote() {
+    // Fora do `request` de propósito: aquele espera JSON, e aqui a resposta é
+    // um zip de megabytes que precisa chegar como `Blob` sem passar por
+    // `JSON.parse`.
+    let res: Response
+    try {
+      res = await fetch(`${BASE}/api/pacote/`)
+    } catch {
+      throw new ApiError('o servidor local não respondeu — ele está rodando?', 0)
+    }
+    if (!res.ok) throw new ApiError(await messageFor(res), res.status)
+    return { blob: await res.blob(), nome: nomeDoAnexo(res.headers.get('Content-Disposition')) }
+  },
+
+  importarPacote(file) {
+    const form = new FormData()
+    form.append('file', file)
+    return request<PacoteRecebido>('/api/pacote/', { method: 'POST', body: form })
+  },
+}
+
+/**
+ * O nome que o servidor deu ao arquivo, para o download não sair sem nome.
+ *
+ * Nomes de peça têm acento, e acento não cabe no cabeçalho: o servidor manda a
+ * forma `filename*=utf-8''...`, percent-encoded, e é ela que vale quando
+ * existe. A forma simples entre aspas fica como reserva.
+ */
+function nomeDoAnexo(header: string | null): string {
+  const padrao = 'SoundDeck.sounddeck'
+  if (!header) return padrao
+
+  const estendido = /filename\*=utf-8''([^;]+)/i.exec(header)
+  if (estendido?.[1]) {
+    try {
+      return decodeURIComponent(estendido[1])
+    } catch {
+      /* percent-encoding quebrado: cai no simples */
+    }
+  }
+
+  const simples = /filename="?([^";]+)"?/i.exec(header)
+  return simples?.[1] ?? padrao
 }

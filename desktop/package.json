@@ -1,0 +1,62 @@
+{
+  "name": "sounddeck-desktop",
+  "productName": "SoundDeck",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deck de disparo de áudio para espetáculos ao vivo",
+  "author": "SoundDeck",
+  "license": "UNLICENSED",
+  "main": "main.js",
+  "scripts": {
+    "icone": "node scripts/make-icon.mjs",
+    "empacotar": "node scripts/build.mjs",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.sounddeck.deck",
+    "productName": "SoundDeck",
+    "copyright": "SoundDeck",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend/dist/sounddeck-server",
+        "to": "server"
+      }
+    ],
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "SoundDeck-${version}-instalador.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SoundDeck",
+      "language": "1046",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

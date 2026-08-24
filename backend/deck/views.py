@@ -18,6 +18,9 @@ em posição termina reindexando o grupo afetado (`deck/ordering.py`).
 
 from __future__ import annotations
 
+import os
+
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import status
@@ -572,3 +575,104 @@ def _restore_cues(cues_data, *, scenes: dict[str, Scene] | None = None) -> None:
 
     Cue.objects.bulk_create(pending)
     services.reindex_cues_of({cue.scene_id for cue in pending})
+
+
+# ------------------------------------------------------- espetáculo em arquivo
+
+
+@api_view(["GET", "POST"])
+@parser_classes([MultiPartParser, FormParser])
+def pacote_view(request: Request):
+    """
+    O espetáculo inteiro entrando e saindo como um arquivo `.sounddeck`.
+
+    `GET` monta o pacote e devolve para download. `POST` recebe um e o deixa na
+    pasta de entrada, para ser aplicado na próxima abertura.
+
+    A assimetria é de propósito e está explicada em `deck/pacote.py`: exportar
+    é ler, e ler pode acontecer com o servidor rodando; importar é trocar o
+    arquivo do SQLite debaixo de uma conexão aberta, e isso não pode. Por isso
+    a resposta do `POST` não é "pronto", é "vai valer quando você reabrir".
+    """
+    if request.method == "GET":
+        return _exportar()
+    return _receber(request)
+
+
+def _exportar():
+    from django.http import FileResponse
+
+    from . import pacote
+
+    dados = settings.DATA_DIR
+    shows = list(Show.objects.all())
+    destino = dados / f"exportado{pacote.EXTENSAO}"
+
+    pacote.montar(
+        dados,
+        destino,
+        resumo={
+            "pecas": [s.name for s in shows],
+            "audios": Audio.objects.alive().count(),
+        },
+    )
+
+    return FileResponse(
+        destino.open("rb"),
+        as_attachment=True,
+        filename=_nome_do_arquivo(shows) + pacote.EXTENSAO,
+        content_type="application/zip",
+    )
+
+
+def _nome_do_arquivo(shows: list[Show]) -> str:
+    """
+    Um nome que diga o que tem dentro, já na pasta de downloads.
+
+    Com uma peça só, o nome dela; com várias, o do produto. A data entra
+    sempre: quem manda a terceira versão do mesmo espetáculo por WhatsApp
+    precisa que os três arquivos não tenham o mesmo nome.
+    """
+    base = shows[0].name.strip() if len(shows) == 1 and shows[0].name.strip() else "SoundDeck"
+    limpo = "".join(c for c in base if c not in r'\/:*?"<>|').strip() or "SoundDeck"
+    return f"{limpo} — {timezone.localdate().isoformat()}"
+
+
+def _receber(request: Request) -> Response:
+    from . import entrada, pacote
+
+    enviado = request.FILES.get("file")
+    if enviado is None:
+        raise Invalid("nenhum arquivo foi enviado")
+
+    # O arquivo chega num nome provisório e só ganha o nome definitivo depois
+    # de passar na conferência. É o que impede um arquivo errado de destruir um
+    # pacote legítimo que já estava esperando a próxima abertura: escrevendo
+    # direto no destino, a recusa apagaria o que estava lá.
+    pasta = entrada.preparar(settings.DATA_DIR)
+    provisorio = pasta / f".recebendo-{os.getpid()}.tmp"
+    with provisorio.open("wb") as arquivo:
+        for bloco in enviado.chunks():
+            arquivo.write(bloco)
+
+    try:
+        pacote.conferir(provisorio)
+    except pacote.PacoteInvalido as erro:
+        provisorio.unlink(missing_ok=True)
+        raise Invalid(str(erro))
+
+    # Nome único: dois pacotes importados antes de reabrir o programa são duas
+    # esperas na fila, e `entrada` aplica na ordem de chegada — o último a
+    # entrar é o que fica de pé.
+    carimbo = timezone.now().strftime("%Y%m%d-%H%M%S")
+    destino = pasta / f"importado-{carimbo}{pacote.EXTENSAO}"
+    provisorio.replace(destino)
+
+    manifesto = pacote.ler_manifesto(destino)
+    return ok(
+        {
+            "aceito": True,
+            "pecas": manifesto.get("pecas", []),
+            "audios": manifesto.get("audios"),
+        }
+    )

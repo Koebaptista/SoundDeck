@@ -9,6 +9,7 @@
     "dev": "vite",
     "prebuild": "node scripts/gen-audio.mjs",
     "build": "tsc -b && vite build",
+    "build:desktop": "tsc -b && vite build --mode desktop",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit"
   },

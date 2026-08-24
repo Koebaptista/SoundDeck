@@ -9,6 +9,8 @@ import { ProgramBar } from './components/ProgramBar'
 import { StopAll } from './components/StopAll'
 import { ToastRegion } from './components/ToastRegion'
 import { FirstRun } from './components/FirstRun'
+import { BemVindo } from './components/BemVindo'
+import { PacoteBar } from './components/PacoteBar'
 import { OperarView } from './modes/operar/OperarView'
 import { MontarView, type MontarTab } from './modes/montar/MontarView'
 import { CloseIcon, WarnIcon } from './icons'
@@ -31,6 +33,10 @@ export function App() {
   // seletor de peça manda abrir "Dias" quando a peça escolhida não tem
   // nenhum, e essa é a única saída do beco.
   const [montarTab, setMontarTab] = useState<MontarTab>('cenas')
+  // O bilhete de abertura, uma vez por vez que o programa abre. Vive aqui e
+  // não dentro do componente porque fechá-lo é definitivo *nesta* sessão: um
+  // estado lá dentro voltaria a `true` a cada remontagem da árvore.
+  const [bilhete, setBilhete] = useState(true)
   const { show, day, scene, days, scenes, selectShow, selectDay, selectScene } = useSelection(deck)
   const locked = useAudioLocked()
 
@@ -106,6 +112,10 @@ export function App() {
         </div>
       )}
 
+      {/* Depois do carregamento: um modal por cima do esqueleto seria um
+          bilhete sobre uma tela que ainda não é a tela. */}
+      {status === 'ready' && bilhete && <BemVindo onClose={() => setBilhete(false)} />}
+
       {status === 'loading' && <DeckSkeleton />}
 
       {status === 'error' && (
@@ -155,6 +165,8 @@ export function App() {
             onSelectScene={selectScene}
           />
         ))}
+
+      {!usingMock && mode === 'montar' && <PacoteBar />}
 
       {usingMock && mode === 'montar' && (
         <div className="mockbar">

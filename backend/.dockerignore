@@ -5,3 +5,8 @@ media/
 *.sqlite3
 .env
 README.md
+
+# Gerados pelo build do aplicativo de mesa; a imagem não usa nenhum deles.
+spa/
+dist/
+build/

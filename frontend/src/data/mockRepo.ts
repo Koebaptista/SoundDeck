@@ -621,6 +621,15 @@ export const mockRepo: Repo = {
       state.cues.push(...cues)
     })
   },
+
+  // Um pacote é um arquivo com o banco e a pasta de mídia dentro, e o mock não
+  // tem nem um nem outro — ele mora no localStorage deste navegador. A
+  // interface esconde os botões quando o mock está ativo (`usingMock`), então
+  // estes dois só falam se alguém os chamar de fora do caminho previsto.
+  exportarPacote: () =>
+    Promise.reject(new Error('exportar o espetáculo precisa do servidor local')),
+  importarPacote: () =>
+    Promise.reject(new Error('importar um espetáculo precisa do servidor local')),
 }
 
 /** Precisa ser maior que a vida do aviso de desfazer em `state/toasts.tsx`. */

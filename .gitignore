@@ -10,6 +10,14 @@ node_modules/
 dist/
 tsconfig.tsbuildinfo
 
+# Aplicativo de mesa — tudo aqui é gerado por `desktop/scripts/build.mjs`
+backend/spa/
+backend/build/
+desktop/release/
+desktop/build/
+# O espetáculo que viaja no instalador é material do operador, não código.
+desktop/espetaculo.sounddeck
+
 # Env
 .env
 .env.local

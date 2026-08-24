@@ -1,0 +1,17 @@
+# O que o backend precisa a mais para virar um executável de mesa.
+#
+# Fora do `requirements.txt` de propósito: nem a imagem do Docker nem o
+# desenvolvimento do dia a dia carregam nada disto. Instale com
+# `pip install -r requirements-desktop.txt` antes de rodar
+# `node desktop/scripts/build.mjs`.
+
+-r requirements.txt
+
+# O servidor de verdade, no lugar do `runserver`. Python puro, sem compilar
+# nada e sem depender de fork — que é o que faz dele o WSGI que atravessa o
+# PyInstaller no Windows sem cerimônia.
+waitress==3.0.2
+
+# Congela o Python, o Django e o resto num diretório que roda sem Python
+# instalado na máquina do outro.
+pyinstaller==6.11.1

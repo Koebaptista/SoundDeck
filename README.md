@@ -5,7 +5,8 @@ sem contas e sem nuvem. O contrato de produto está em `PRODUCT.md`, o sistema
 visual em `DESIGN.md` e as decisões de escopo em `BRIEF.md`.
 
 O projeto tem duas metades: `frontend/` (React + Vite) e `backend/`
-(Django + DRF).
+(Django + DRF). Uma terceira pasta, `desktop/`, não é uma metade nova — é a
+coxia que junta as duas num aplicativo instalável.
 
 ## Rodar com Docker
 
@@ -65,3 +66,32 @@ Continua valendo, e nada foi removido: `backend/README.md` tem o venv e o
 `runserver`, `frontend/README.md` tem o `npm run dev`. As duas formas usam o
 mesmo banco e a mesma pasta de mídia — só não rode as duas ao mesmo tempo na
 mesma porta.
+
+## Aplicativo de mesa
+
+Tudo acima é para quem desenvolve o deck. Quem só quer operá-lo recebe um
+instalador do Windows e não precisa de Python, Node, Docker nem terminal:
+
+```powershell
+node desktop\scripts\build.mjs
+```
+
+Sai um `desktop\release\SoundDeck-<versão>-instalador.exe` de uns 130 MB, que
+carrega dentro de si o Django congelado e a interface compilada. `desktop/`
+não reimplementa nada: o Django passou a servir também o React já buildado, e
+o Electron só acende esse servidor numa porta livre e abre uma janela nele —
+uma origem só, sem CORS, com o `Range` da mídia valendo igual.
+
+Os dados de quem opera ficam em `%LOCALAPPDATA%\SoundDeck`, fora da pasta de
+instalação: banco, áudios e o log da última subida. Fazer backup do deck é
+copiar essa pasta. Dentro dela, `entrada/` é onde se largam os áudios de uma
+trilha inteira de uma vez — eles entram na abertura seguinte, sem clicar em
+enviar trinta vezes.
+
+O espetáculo montado cabe num arquivo. **Exportar espetáculo**, no modo montar,
+escreve um `.sounddeck` com o roteiro e os áudios juntos; do outro lado ele
+entra pelo botão **Trazer espetáculo**, pela pasta de entrada, ou embutido no
+próprio instalador — quem recebe abre o programa com tudo no lugar.
+
+`desktop/README.md` tem o resto — como construir, o que o instalador faz na
+máquina do outro, e por que o Windows mostra um aviso na primeira execução.
