@@ -19,8 +19,18 @@ Sobe as duas metades de uma vez:
 - deck em **http://127.0.0.1:5173**
 - API em **http://127.0.0.1:8000**
 
-`Ctrl+C` derruba. `docker compose up -d` deixa rodando em segundo plano, e
-`docker compose down` encerra.
+`Ctrl+C` derruba. `docker compose up -d` deixa rodando em segundo plano, e a
+partir daí o deck se opera por estes quatro:
+
+```bash
+docker compose ps                  # o que está de pé, e em que portas
+docker compose restart             # reinicia os dois, sem reconstruir
+docker compose logs -f frontend    # o Vite falando; troque por `backend` para o Django
+docker compose down                # encerra
+```
+
+`restart` é para quando um dos servidores se perde — não para ver uma mudança
+de código. Essa chega sozinha, e o parágrafo abaixo explica por quê.
 
 **O código continua sendo o do disco, não uma cópia dentro da imagem.** As duas
 pastas entram como bind mount, então salvar um componente recarrega a tela e
@@ -81,6 +91,29 @@ carrega dentro de si o Django congelado e a interface compilada. `desktop/`
 não reimplementa nada: o Django passou a servir também o React já buildado, e
 o Electron só acende esse servidor numa porta livre e abre uma janela nele —
 uma origem só, sem CORS, com o `Range` da mídia valendo igual.
+
+A cópia que se manda para alguém fica na raiz do repositório, com nome fixo e
+sem a versão no meio: é ela que se arrasta para o WhatsApp ou para o Drive, sem
+ter de caçar qual dos arquivos de `desktop\release\` é o de hoje.
+
+```powershell
+node desktop\scripts\build.mjs
+copy desktop\release\SoundDeck-*-instalador.exe SoundDeck-instalador.exe
+```
+
+**O instalador não acompanha o código.** Ele é uma fotografia, e a ordem em que
+foi tirada importa: a interface entra compilada dentro do executável do
+servidor, que entra dentro do instalador. Salvar um componente muda o deck do
+Docker no mesmo segundo e não muda o `.exe` em nada — quem recebeu o arquivo
+continua com a versão do dia em que ele foi construído. Depois de qualquer
+mudança que precise chegar a quem opera, os dois comandos acima de novo, uns
+dez minutos.
+
+O arquivo da raiz não entra no Git. `desktop/release/` está no `.gitignore`, a
+cópia não está — ela aparece no `git status` de propósito, para não ser
+esquecida —, mas commitá-la esbarra no limite de 100 MB do GitHub, e o
+instalador passa de 120 MB. Para distribuí-lo pelo GitHub, o caminho é anexá-lo
+a uma release.
 
 Os dados de quem opera ficam em `%LOCALAPPDATA%\SoundDeck`, fora da pasta de
 instalação: banco, áudios e o log da última subida. Fazer backup do deck é
