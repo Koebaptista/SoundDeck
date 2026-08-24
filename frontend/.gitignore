@@ -1,0 +1,5 @@
+node_modules
+dist
+public/audio/*.wav
+tsconfig.tsbuildinfo
+.env.local

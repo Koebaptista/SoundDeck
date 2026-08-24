@@ -1,0 +1,22 @@
+# Python / backend
+backend/.venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+backend/media/
+
+# Node / frontend
+node_modules/
+dist/
+tsconfig.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
