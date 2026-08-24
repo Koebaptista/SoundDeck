@@ -342,6 +342,46 @@ class ApiTests(TestCase):
         self.assertEqual(Cue.objects.filter(pk="c-fantasma").count(), 0)
         self.assertEqual(Cue.objects.filter(scene_id=scene["id"]).count(), 1)
 
+    # ---------------------------------------------------- arquivos
+
+    def test_media_entrega_o_trecho_pedido(self):
+        # O engine toca por streaming tudo que passa de 45s, e elemento de
+        # áudio sem `Accept-Ranges` não consegue buscar posição na faixa.
+        conteudo = wav_bytes(1.0)
+        (MEDIA / "audio").mkdir(parents=True, exist_ok=True)
+        (MEDIA / "audio" / "longa.wav").write_bytes(conteudo)
+
+        inteiro = self.client.get("/media/audio/longa.wav")
+        self.assertEqual(inteiro.headers["Accept-Ranges"], "bytes")
+
+        trecho = self.client.get("/media/audio/longa.wav", headers={"Range": "bytes=100-199"})
+        self.assertEqual(trecho.status_code, 206)
+        self.assertEqual(trecho.headers["Content-Length"], "100")
+        self.assertEqual(
+            trecho.headers["Content-Range"], f"bytes 100-199/{len(conteudo)}"
+        )
+        self.assertEqual(b"".join(trecho.streaming_content), conteudo[100:200])
+
+    def test_media_entende_as_formas_abertas_do_range(self):
+        conteudo = wav_bytes(0.5)
+        (MEDIA / "audio").mkdir(parents=True, exist_ok=True)
+        (MEDIA / "audio" / "aberta.wav").write_bytes(conteudo)
+        total = len(conteudo)
+
+        fim = self.client.get("/media/audio/aberta.wav", headers={"Range": "bytes=-64"})
+        self.assertEqual(b"".join(fim.streaming_content), conteudo[-64:])
+
+        resto = self.client.get(
+            "/media/audio/aberta.wav", headers={"Range": f"bytes={total - 10}-"}
+        )
+        self.assertEqual(b"".join(resto.streaming_content), conteudo[-10:])
+
+        fora = self.client.get(
+            "/media/audio/aberta.wav", headers={"Range": f"bytes={total + 5}-"}
+        )
+        self.assertEqual(fora.status_code, 416)
+        self.assertEqual(fora.headers["Content-Range"], f"bytes */{total}")
+
     def test_patch_de_cue_aceita_um_campo_de_cada_vez(self):
         show = self.make_show()
         scene = self.make_scene(self.first_day(show["id"]))

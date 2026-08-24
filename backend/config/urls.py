@@ -7,16 +7,11 @@ deixar `/media/` fora do ar com `DEBUG=False` deixaria o operador com uma
 biblioteca inteira de cues mudos.
 """
 
-from django.conf import settings
 from django.urls import include, path
-from django.views.static import serve
+
+from deck.media import serve_media
 
 urlpatterns = [
     path("api/", include("deck.urls")),
-    path(
-        "media/<path:path>",
-        serve,
-        {"document_root": settings.MEDIA_ROOT},
-        name="media",
-    ),
+    path("media/<path:path>", serve_media, name="media"),
 ]
